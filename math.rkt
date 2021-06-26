@@ -224,42 +224,29 @@
 (define (vphantom t))
 (module+ drracket
   
-  (displayln (tblock->string ($^ ($+ 1 ($* 2 'x 'α)) 3)))
+  (displayln ($^ ($+ 1 ($* 2 'x 'α)) 3))
 
   (displayln
-   (tblock->string
-    (tblock-happend
+   (tblock-happend
      #:align 'baseline
      ($product #;sum "x=1" ($floor ($+ ($/ "X²" "2") "3")))
      "exp"
-     ($brace
-      ($/
-       ($sqrt
-        ($+
-         (tblock-happend
-          "log"
-          ($paren
-           ($/
-            #;"ax²+2" #;"ax²+2\nxxx" "ax²+2\nxxx\nyyy"
-            "bx³-3")))
-         (tblock-happend
-          ($integral
-           "3y"
-           "∞")
-          (tblock-happend
-           ($/
-            "ax²+2"
-            "bx³-3")
-           " dx"))
-         "2x+3"))
-       ($+
-        ($/
-         "ax²+2"
-         "bx³-3")
-        ($/
-         ($square-bracket
-          ($/
-           "ax²+2"
-           "bx³-3"))
-         ($paren (tblock-happend ($sum "n=1" "N") "log(n)"))))))))))
+     ($brace ($/ ($sqrt
+                  ($+ (tblock-happend
+                       "log"
+                       ($paren ($/ ($* ($/ 2 3) "x")
+                                   "bx³-3")))
+                      (tblock-happend
+                       ($integral "3y" "∞")
+                       (tblock-happend
+                        ($/ "ax²+2"
+                            "bx³-3")
+                        " dx"))
+                      "2x+3"))
+       ($+ ($/ "ax²+2"
+               "bx³-3")
+           ($/ ($square-bracket
+                ($/ "ax²+2"
+                    "bx³-3"))
+               ($paren (tblock-happend ($sum "n=1" "N") "log(n)")))))))))
 
