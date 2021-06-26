@@ -12,7 +12,7 @@ The following code:
 (displayln
    (tblock-happend
      #:align 'baseline
-     ($product #;sum "x=1" ($floor ($+ ($/ "X²" "2") "3")))
+     ($product "x=1" ($floor ($+ ($/ "X²" "2") "3")))
      "exp"
      ($brace ($/ ($sqrt
                   ($+ (tblock-happend
