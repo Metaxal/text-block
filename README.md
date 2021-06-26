@@ -54,7 +54,9 @@ produces this output
 A number of renderers add empty pixel lines between text lines,
 which prevents a nice rendering. Here's what it looks like with a good 
 editor:
+
 ![equation](img/eq-screenshot.png)
+
 To obtain this result in DrRacket, uncheck
 `Preferences|Editing|General Editing|Add one pixel of extra space between lines`.
  
