@@ -1,0 +1,177 @@
+#lang racket
+(require define2)
+;;; text blocks that can be combined like pictures.
+;;; need to keep track of the baseline
+
+(provide (all-defined-out))
+
+;;; any append operation creates a new rectangular block
+
+(define (tblock-print tb port mode)
+  #;(displayln (list 'mode mode))
+  (case mode
+    [(#f) (display (tblock->string tb) port)]
+    [else
+     (define lines (map ~s (tblock-lines tb)))
+     (define str (string-join lines "\n"))
+     (fprintf port
+              "(tblock #:width ~a #:height ~a #:baseline ~a~a)"
+              (tblock-width tb)
+              (tblock-height tb)
+              (tblock-baseline tb)
+              (string-append (case mode [(0) " '("] [else " ("])
+                             (if (> (length lines) 1) "\n" "")
+                             str
+                             ")"))]))
+
+;; baseline: row number
+(struct tblock (width height [baseline #:mutable] lines)
+  #:transparent
+  #:methods gen:custom-write
+  [(define write-proc tblock-print)])
+
+(define (tblock->string t)
+  (string-join (tblock-lines t) "\n"))
+
+(define (string-pad str width align #:char [char #\space])
+  (define n (max 0 (- width (string-length str))))
+  (if (= 0 n)
+    str
+    (case align
+      [(left) (string-append str (make-string n char))]
+      [(right) (string-append (make-string n char) str)]
+      [(center)
+       (define n/2 (quotient n 2))
+       (string-append (make-string n/2 char)
+                      str
+                      (make-string (- n n/2) char))])))
+
+(module+ test
+  (require rackunit)
+  (check-equal? (string-pad "abcde" 10 'left #:char #\space)
+                "abcde     ")
+  (check-equal? (string-pad "abcde" 10 'right #:char #\_)
+                "_____abcde")
+  (check-equal? (string-pad "abcde" 10 'center #:char #\space)
+                "  abcde   "))
+
+;; align: (or/c 'left 'center 'right)
+(define (make-tblock lines
+                     #:align [align 'left]
+                     #:pad-char [char #\space]
+                     #:baseline [baseline 0])
+  (when (string? lines)
+    (set! lines (string-split lines "\n" #:trim? #f)))
+  (unless (andmap string? lines)
+    (raise-argument-error 'make-tblock "(or/c string? (listof string?))" lines))
+  (define w (apply max (map string-length lines)))
+  (define h (length lines))
+  (define new-lines
+    (for/list ([line (in-list lines)] [i (in-naturals)])
+      (match line
+        [(list 'b (? string? str))
+         (set! baseline i)]
+        [else (void)])
+      (string-pad line w align #:char char)))
+  (tblock w h baseline new-lines))
+
+(define (->tblock t)
+  (cond [(tblock? t) t]
+        [(string? t) (make-tblock t)]
+        [else (make-tblock (~a t))]))
+
+(define (tblock-valign-row t align)
+  (let ([t (->tblock t)])
+    (case align
+      [(top) 0]
+      [(bottom) (tblock-height t)]
+      [(baseline) (tblock-baseline t)])))
+
+;; align : (or/c 'top 'baseline 'bottom)
+(define (tblock-happend #:align [align 'baseline] #:pad-char [char #\space]
+                        . ts)
+  (let ([ts (map ->tblock ts)])
+    (define-values (htop hbottom)
+      (case align
+        [(top)
+         (values 0 (apply max (map tblock-height ts)))]
+        [(bottom)
+         (values (apply max (map tblock-height ts)) 0)]
+        [(baseline)
+         (values (apply max (map tblock-baseline ts))
+                 (apply max (map (λ (t) (- (tblock-height t) (tblock-baseline t))) ts)))]))
+
+    (define new-tlines
+      (for/list ([t (in-list ts)])
+        (define r (tblock-valign-row t align))
+        (append (make-list (max 0 (- htop r))
+                           (make-string (tblock-width t) char))
+                (tblock-lines t)
+                (make-list (max 0 (- hbottom (- (tblock-height t) r)))
+                           (make-string (tblock-width t) char)))))
+    (define lines (apply map string-append new-tlines))
+    (make-tblock lines #:baseline htop)))
+
+(define (tblock-vappend #:align [align 'left]
+                        #:pad-char [char #\space]
+                        #:baseline-of [t-bl #f]
+                        . ts)
+  (let ([ts (map ->tblock ts)])
+    (when (and t-bl (not (memq t-bl ts)))
+      (error "tblock-append: Cannot find baseline text-block in given list of text blocks"))
+    (define bl (if t-bl
+                 (+ (for/sum ([t (in-list ts)]
+                              #:break (eq? t t-bl))
+                      (tblock-height t))
+                    (tblock-baseline t-bl))
+                 0))
+    (make-tblock (append-map tblock-lines ts) #:align align #:pad-char char #:baseline bl)))
+
+
+;; rpos: (or/c 'top 'center 'bottom number? (list/c 'ratio number?))
+;; cops: (or/c 'left 'center 'right number? (list/c 'ratio number?))
+#;(define (tblock-superimpose t1 t2 rpos cpos)
+  (let ([t1 (->tblock t1)] [t2 (->tblock t2)])
+    (match-define (tblock w1 h1 b1 lines1) t1)
+    (match-define (tblock w2 h2 b2 lines2) t2)
+    (define r
+      (match rpos
+        ['top 0]
+        ['center (quotient (/ (- h1 h2) 2))]
+        ['bottom (- h1 h2)]
+        [(list 'ratio (? number? ratio))
+         (exact-round (* ratio (* (- h1 h2) ratio)))]
+        [(? number?) rpos]))
+    (define c
+      (match cpos
+        ['left 0]
+        ['center (quotient (/ (- w1 w2) 2))]
+        ['right (- w1 w2)]
+        [(list 'ratio (? number? ratio))
+         (exact-round (* ratio (* (- h1 h2) ratio)))]
+        [(? number?) cpos]))
+    (define w3 ())
+    (define h3 ())
+    (define lines3
+      (for/list ([])))
+    ))
+
+#;
+(displayln
+   (tblock->string
+    (tblock-happend
+     (make-tblock
+      #:baseline 1
+      "
+This is a
+   nice piece
+ of text
+again")
+     (make-tblock "    ")
+     (make-tblock
+      "   This is another
+piece of
+text")
+     #:align 'baseline)))
+
+
