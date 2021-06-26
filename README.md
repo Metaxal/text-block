@@ -6,6 +6,9 @@ Currently unstable. All bug reports and comments are welcome.
 
 The following code:
 ```racket
+#lang racket
+(require text-block)
+
 (displayln
    (tblock-happend
      #:align 'baseline
