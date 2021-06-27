@@ -1,7 +1,8 @@
 #lang racket
-(require define2)
-;;; text blocks that can be combined like pictures.
-;;; need to keep track of the baseline
+(require define2
+         "justify.rkt")
+
+;;; Text blocks that can be combined like pictures.
 
 (provide (all-defined-out))
 
@@ -85,7 +86,8 @@
     (case align
       [(top) 0]
       [(bottom) (tblock-height t)]
-      [(baseline) (tblock-baseline t)])))
+      [(baseline) (tblock-baseline t)]
+      [(center) (quotient (tblock-height t) 2)])))
 
 ;; align : (or/c 'top 'baseline 'bottom)
 (define (tblock-happend #:align [align 'baseline] #:pad-char [char #\space]
@@ -97,6 +99,10 @@
          (values 0 (apply max (map tblock-height ts)))]
         [(bottom)
          (values (apply max (map tblock-height ts)) 0)]
+        [(center)
+         (define m (apply max (map tblock-height ts)))
+         (define q (quotient m 2))
+          (values q (- m q))]
         [(baseline)
          (values (apply max (map tblock-baseline ts))
                  (apply max (map (λ (t) (- (tblock-height t) (tblock-baseline t))) ts)))]))
@@ -156,22 +162,79 @@
       (for/list ([])))
     ))
 
-#;
-(displayln
-   (tblock->string
+;; The center element is used for the inset
+(define styles
+  '([single . ("┌─┐"
+               "│ │"
+               "└─┘")]
+    [round  . ("╭─╮"
+               "│ │"
+               "╰─╯")]
+    [double . ("╔═╗"
+               "║ ║"
+               "╚═╝")]))
+
+;; style: (one-of 'single 'round 'double frame-style/c)
+(define (tblock-frame t #:style [style 'single] #:inset [inset 0])
+  (let ([t (->tblock t)])
+    (match-define (tblock w h baseline lines) t)
+    (match-define `((,tl ,tc ,tr)
+                    (,cl ,cc ,cr)  ; ,cc used for inset
+                    (,bl ,bc ,br))
+      (map string->list (dict-ref styles style style)))
+    (make-tblock
+     (append
+      (list (string-append (string tl)
+                           (make-string (+ w (* 2 inset)) tc)
+                           (string tr)))
+      (make-list inset (string-append (string cl)
+                                      (make-string (+ w (* 2 inset)) cc)
+                                      (string cr)))
+      (map (λ (line)
+             (string-append (string cl)
+                            (make-string inset cc)
+                            line
+                            (make-string inset cc)
+                            (string cr)))
+           lines)
+      (make-list inset (string-append (string cl)
+                                      (make-string (+ w (* 2 inset)) cc)
+                                      (string cr)))
+      (list (string-append (string bl)
+                           (make-string (+ w (* 2 inset)) bc)
+                           (string br))))
+     #:baseline (+ baseline 1 inset))))
+
+(module+ drracket
+  (define lorem-ipsum
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+  (displayln
+   (tblock-frame
     (tblock-happend
-     (make-tblock
-      #:baseline 1
-      "
-This is a
-   nice piece
- of text
-again")
-     (make-tblock "    ")
-     (make-tblock
-      "   This is another
-piece of
-text")
-     #:align 'baseline)))
+     #:align 'center
+     (make-tblock (justify (string-append
+                            "Here's some justified text: "
+                            lorem-ipsum " " lorem-ipsum) 43))
+     (tblock-vappend
+      #:align 'center
+      (tblock-happend
+       (tblock-frame
+        (make-tblock
+         #:baseline 1
+         #:align 'left
+         '("This text is" "#:align 'left" "and" "`frame`d with" "#:style 'round"))
+        #:style 'round)
+       (make-tblock "    ")
+       (tblock-frame
+        (make-tblock
+         #:align 'right
+         '("This text is" "#:align 'right" "and" "`frame`d with" "#:style 'double"
+                          "and #:inset 2"))
+        #:style 'double #:inset 2)
+       #:align 'baseline)
+      (tblock-frame
+       (make-tblock
+        '("This text is" "#:align 'center" "and" "`frame`d with" "#:style 'single")
+        #:align 'center)))))))
 
 
