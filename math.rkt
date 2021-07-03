@@ -19,7 +19,7 @@
                             (apply $* ts))))])
     (define w (max (tblock-width t1) (tblock-width t2)))
     (define new-t
-      (tblock-vappend #:align 'center
+      (vappend #:align 'center
                       t1
                       (make-tblock (make-string w #\─))
                       t2))
@@ -27,12 +27,12 @@
     new-t))
 
 (define ($+ . ts)
-  (apply tblock-happend
+  (apply happend
           #:align 'baseline
           (add-between ts " + ")))
 
 (define ($* . ts)
-  (apply tblock-happend
+  (apply happend
          #:align 'baseline
          (let ([ts2
                 (map (λ (t) (let ([t (->tblock t)])
@@ -57,12 +57,12 @@
       ($paren t))))
 
 (define ($sqr t)
-  (tblock-happend (maybe-paren t) "²"))
+  (happend (maybe-paren t) "²"))
 
 (define ($^ t1 t2)
   (let ([t1 (maybe-paren (->tblock t1))] [t2 (->tblock t2)])
     (define t3
-      (tblock-vappend (tblock-happend (make-string (tblock-width t1) #\space) t2)
+      (vappend (happend (make-string (tblock-width t1) #\space) t2)
                       t1
                       #:align 'left))
     (set-tblock-baseline! t3 (+ (tblock-height t2) (tblock-baseline t1)))
@@ -71,8 +71,8 @@
 (define ($_ t1 t2)
   (let ([t1 (->tblock t1)] [t2 (->tblock t2)])
     (define t3
-      (tblock-vappend t1
-                      (tblock-happend (make-string (tblock-width t1) #\space) t2)
+      (vappend t1
+                      (happend (make-string (tblock-width t1) #\space) t2)
                       #:align 'left))
     (set-tblock-baseline! t3 (tblock-baseline t1))
     t3))
@@ -80,9 +80,9 @@
 (define ($^_ t1 t^ t_)
   (let ([t1 (maybe-paren (->tblock t1))] [t^ (->tblock t^)])
     (define t3
-      (tblock-vappend (tblock-happend (make-string (tblock-width t1) #\space) t^)
+      (vappend (happend (make-string (tblock-width t1) #\space) t^)
                       t1
-                      (tblock-happend (make-string (tblock-width t1) #\space) t_)
+                      (happend (make-string (tblock-width t1) #\space) t_)
                       #:align 'left))
     (set-tblock-baseline! t3 (+ (tblock-height t^) (tblock-baseline t1)))
     t3))
@@ -91,10 +91,10 @@
 ;; returns a function that takes a below and above tblocks and returns
 ;; a tblock that vappends them and adds a space.
 ;; See tblock-sum for an example.
-(define ((make-tblock-operator tsym) below above)
+(define ((make-operator tsym) below above)
   (let ([below (->tblock below)] [above (->tblock above)])
-    (tblock-happend
-     (tblock-vappend
+    (happend
+     (vappend
       #:align 'center
       #:baseline-of tsym
       above
@@ -104,7 +104,7 @@
 
 ;; https://en.wikipedia.org/wiki/Miscellaneous_Technical#Block
 (define $sum
-  (make-tblock-operator
+  (make-operator
    (make-tblock
     "\
 ▁▁▁
@@ -114,7 +114,7 @@
     #:baseline 2)))
 
 (define $product
-  (make-tblock-operator
+  (make-operator
    (make-tblock
     "\
 ▁▁▁▁
@@ -124,7 +124,7 @@
 
 ;; Should the integral scale with the height of a given tblock?
 (define $integral
-  (make-tblock-operator
+  (make-operator
    (make-tblock
 "\
 ⎧
@@ -139,10 +139,10 @@
     (define h (tblock-height t))
     (define w (tblock-width t))
     (define t2
-      (tblock-vappend
+      (vappend
        #:align 'left
        (string-append " " (make-string (+ w 1) #\▁))
-       (tblock-happend
+       (happend
         #:align 'bottom
         (string-join (append (make-list (- h 1) " ▏")
                              (list "╲▏"))
@@ -184,11 +184,11 @@
 
 (define (make-bracketing make-left-bracket make-right-bracket)
   (values (λ (t) (let ([t (->tblock t)])
-                   (tblock-happend (make-left-bracket t) t #:align 'baseline)))
+                   (happend (make-left-bracket t) t #:align 'baseline)))
           (λ (t) (let ([t (->tblock t)])
-                   (tblock-happend t (make-right-bracket t) #:align 'baseline)))
+                   (happend t (make-right-bracket t) #:align 'baseline)))
           (λ (t) (let ([t (->tblock t)])
-                   (tblock-happend (make-left-bracket t) t (make-right-bracket t) #:align 'baseline)))))
+                   (happend (make-left-bracket t) t (make-right-bracket t) #:align 'baseline)))))
 
 ;; WARNING: Naming inconsistence with tblock-sum
 ;; WARNING: Name clashes with normal racket

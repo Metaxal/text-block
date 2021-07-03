@@ -8,6 +8,8 @@
 
 ;;; any append operation creates a new rectangular block
 
+(define tblock/x any/c)
+
 (define (tblock-print tb port mode)
   #;(displayln (list 'mode mode))
   (case mode
@@ -81,7 +83,7 @@
         [(string? t) (make-tblock t)]
         [else (make-tblock (~a t))]))
 
-(define (tblock-valign-row t align)
+(define (valign-row t align)
   (let ([t (->tblock t)])
     (case align
       [(top) 0]
@@ -90,7 +92,7 @@
       [(center) (quotient (tblock-height t) 2)])))
 
 ;; align : (or/c 'top 'baseline 'bottom)
-(define (tblock-happend #:align [align 'baseline] #:pad-char [char #\space]
+(define (happend #:align [align 'baseline] #:pad-char [char #\space]
                         . ts)
   (let ([ts (map ->tblock ts)])
     (define-values (htop hbottom)
@@ -109,7 +111,7 @@
 
     (define new-tlines
       (for/list ([t (in-list ts)])
-        (define r (tblock-valign-row t align))
+        (define r (valign-row t align))
         (append (make-list (max 0 (- htop r))
                            (make-string (tblock-width t) char))
                 (tblock-lines t)
@@ -118,7 +120,7 @@
     (define lines (apply map string-append new-tlines))
     (make-tblock lines #:baseline htop)))
 
-(define (tblock-vappend #:align [align 'left]
+(define (vappend #:align [align 'left]
                         #:pad-char [char #\space]
                         #:baseline-of [t-bl #f]
                         . ts)
@@ -136,7 +138,7 @@
 
 ;; rpos: (or/c 'top 'center 'bottom number? (list/c 'ratio number?))
 ;; cops: (or/c 'left 'center 'right number? (list/c 'ratio number?))
-#;(define (tblock-superimpose t1 t2 rpos cpos)
+#;(define (superimpose t1 t2 rpos cpos)
   (let ([t1 (->tblock t1)] [t2 (->tblock t2)])
     (match-define (tblock w1 h1 b1 lines1) t1)
     (match-define (tblock w2 h2 b2 lines2) t2)
@@ -174,8 +176,12 @@
                "║ ║"
                "╚═╝")]))
 
+(define frame-style/c
+  (or/c (one-of/c 'single 'round 'double)
+        (list/c string? string? string?)))
+
 ;; style: (one-of 'single 'round 'double frame-style/c)
-(define (tblock-frame t #:style [style 'single] #:inset [inset 0])
+(define (frame t #:style [style 'single] #:inset [inset 0])
   (let ([t (->tblock t)])
     (match-define (tblock w h baseline lines) t)
     (match-define `((,tl ,tc ,tr)
@@ -209,30 +215,28 @@
   (define lorem-ipsum
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
   (displayln
-   (tblock-frame
-    (tblock-happend
+   (frame
+    (happend
      #:align 'center
      (make-tblock (justify (string-append
                             "Here's some justified text: "
-                            lorem-ipsum " " lorem-ipsum) 43))
-     (tblock-vappend
+                            lorem-ipsum " " lorem-ipsum) 35))
+     (vappend
       #:align 'center
-      (tblock-happend
-       (tblock-frame
+      (happend
+       (frame
         (make-tblock
-         #:baseline 1
          #:align 'left
          '("This text is" "#:align 'left" "and" "`frame`d with" "#:style 'round"))
         #:style 'round)
-       (make-tblock "    ")
-       (tblock-frame
+       (frame
         (make-tblock
          #:align 'right
          '("This text is" "#:align 'right" "and" "`frame`d with" "#:style 'double"
                           "and #:inset 2"))
         #:style 'double #:inset 2)
-       #:align 'baseline)
-      (tblock-frame
+       #:align 'top)
+      (frame
        (make-tblock
         '("This text is" "#:align 'center" "and" "`frame`d with" "#:style 'single")
         #:align 'center)))))))
