@@ -4,7 +4,9 @@
 
 ;;; Text blocks that can be combined like pictures.
 
-(provide (all-defined-out))
+(provide (struct-out tblock)
+         (all-defined-out)
+         )
 
 ;;; any append operation creates a new rectangular block
 
@@ -218,9 +220,12 @@
    (frame
     (happend
      #:align 'center
-     (make-tblock (justify (string-append
-                            "Here's some justified text: "
-                            lorem-ipsum " " lorem-ipsum) 35))
+     (make-tblock (text->lines
+                   (string-append
+                    "Here's some justified text: "
+                    lorem-ipsum " " lorem-ipsum)
+                   35
+                   #:align 'justified))
      (vappend
       #:align 'center
       (happend

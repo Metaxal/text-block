@@ -46,58 +46,74 @@
                                                   (- ncol (apply + (map string-length strs))))))
            strs))]))
 
-(define (justify text ncol)
-    (let loop ([strs (string-split text #:repeat? #t)]
-               [res '()]
-               [line '()]
-               [line-len 0])
-      (if (empty? strs)
-        (let ()
-          #;(writeln (reverse line))
-          (reverse (if (empty? line)
+;; align: (one-of 'left 'center 'right 'none)
+(define (align-line strs ncol align)
+  (define s (string-join strs " "))
+  (define n (max 0 (- ncol (string-length s))))
+  (define-values (n-left n-right)
+    (case align
+      [(none) (values 0 0)]
+      [(left) (values 0 n)]
+      [(right) (values n 0)]
+      [(center) (values (quotient n 2) (- n (quotient n 2)))]))
+  (string-append (make-string n-left #\space)
+                 s
+                 (make-string n-right #\space)))
+
+;; align: (one-of 'none 'left 'center 'right 'justified)
+(define (text->lines text ncol #:align [align 'none])
+  (define (format-line line [last-line? #f])
+    (case align
+      [(justified)
+       (justify-line (reverse line) ncol #:last-line? last-line?)]
+      [else
+       (align-line (reverse line) ncol align)]))
+  
+  (let loop ([strs (string-split text #:repeat? #t)]
+             [res '()]
+             [line '()]
+             [line-len 0])
+    (if (empty? strs)
+      (let ()
+        #;(writeln (reverse line))
+        (reverse (if (empty? line)
+                   res
+                   (cons (format-line line #t) res))))
+      (let* ([str (first strs)]
+             [rstrs (rest strs)]
+             [str-len (string-length str)]
+             [str-len±1 (+ str-len (if (empty? line) 0 1))]) ; + 1 for spaces between words
+        (cond [(and (empty? line)
+                    (> str-len ncol))
+               ; A single word is too long for a line -> overflow
+               (loop rstrs
+                     ; close the current line
+                     (cons (format-line (list str)) res)
+                     ; start a new line
+                     '()
+                     0)]
+              [(> (+ line-len str-len±1) ncol)
+               (loop rstrs
+                     ; close the current line
+                     (cons (format-line line) res)
+                     ; start a new line
+                     (list str)
+                     str-len)]
+              [else
+               (loop rstrs
                      res
-                     (cons (justify-line (reverse line) ncol #:last-line? #t)
-                           res))))
-        (let* ([str (first strs)]
-               [rstrs (rest strs)]
-               [str-len (string-length str)]
-               [str-len±1 (+ str-len (if (empty? line) 0 1))]) ; + 1 for spaces between words
-          (cond [(and (empty? line)
-                      (> str-len ncol))
-                 ; A single word is too long for a line -> overflow
-                 (loop rstrs
-                       ; close the current line
-                       (cons
-                        (let ()
-                          #;(writeln (reverse line))
-                          (justify-line (list str) ncol))
-                        res)
-                       ; start a new line
-                       '()
-                       0)]
-                [(> (+ line-len str-len±1) ncol)
-                 (loop rstrs
-                       ; close the current line
-                       (cons
-                        (let ()
-                          #;(writeln (reverse line))
-                          (justify-line (reverse line) ncol))
-                        res)
-                       ; start a new line
-                       (list str)
-                       str-len)]
-                [else
-                 (loop rstrs
-                       res
-                       ; continue the current line
-                       (cons str line)
-                       (+ line-len str-len±1))])))))
+                     ; continue the current line
+                     (cons str line)
+                     (+ line-len str-len±1))])))))
 
 (module+ drracket
   (define lorem-ipsum
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
-  (justify lorem-ipsum 80)
-(justify lorem-ipsum 43))
+  (text->lines lorem-ipsum 80 #:align 'justified)
+  (text->lines lorem-ipsum 43 #:align 'justified)
+  (text->lines lorem-ipsum 43 #:align 'left)
+  (text->lines lorem-ipsum 43 #:align 'center)
+  (text->lines lorem-ipsum 43 #:align 'right))
 
 (module+ test
   (define lorem-ipsum
@@ -109,7 +125,7 @@
       (length (string-split s))))
   (define n-ipsum (n-words lorem-ipsum))
   (for ([ncol '(80 43 12 6 1)])
-    (define ips1 (justify lorem-ipsum ncol))
+    (define ips1 (text->lines lorem-ipsum ncol #:align 'justified))
     (check-equal? (apply n-words ips1) n-ipsum)
     (for ([s (in-list ips1)])
       (when (> (n-words s) 1)

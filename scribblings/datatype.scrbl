@@ -2,14 +2,32 @@
 @require[@for-label[text-block
                     racket/contract
                     racket/base
-                    racket/format]]
+                    racket/format]
+         text-block
+         racket/base]
 
 @title{Text block datatype}
 
-TODO: tblock struct
+@defmodule[text-block/tblock]
 
-@defproc[(tblock? [x any/c]) boolean?]{
-Returns whether @racketid[x] is a @racket[tblock].}
+@defstruct[tblock ([width exact-nonnegative-integer?]
+                   [height exact-nonnegative-integer?]
+                   [baseline exact-nonnegative-integer?]
+                   [lines (listof string?)])
+           ;#:extra-constructor-name #f
+           #:omit-constructor]{
+The @racket[tblock] structure.
+Do not use @racket[tblock] for construction, use @racket[make-tblock] instead.
+
+Only the @racketid[baseline] field is mutable.}
+
+
+@defproc[(make-tblock (lines (or/c string? (listof string?)))
+                     [#:align align (one-of/c 'left 'center 'right) 'left]
+                     [#:pad-char pad-char char? #\space]
+                     [#:baseline baseline exact-nonnegative-integer? 0])
+         tblock?]{
+Returns a new @racket[tblock].}
 
 @defproc[(tblock/any [x any/c]) boolean?]{
 A fake contract equivalent to @racket[any/c].
@@ -20,11 +38,4 @@ argument is turned into a @racket[tblock] using @racket[->tblock].}
 Returns @racket[x] if it is already a @racket[tblock?], otherwise
 returns a new @racket[tblock] by turning @racketid[x] into a string first
 using @racket[~a].}
-
-@defproc[(make-tblock (lines (or/c string? (listof string?)))
-                     [#:align align (one-of/c 'left 'center 'right) 'left]
-                     [#:pad-char pad-char char? #\space]
-                     [#:baseline baseline exact-nonnegative-integer? 0])
-         tblock?]{
-Returns a new @racket[tblock].}
 

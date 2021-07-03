@@ -31,6 +31,13 @@
           #:align 'baseline
           (add-between ts " + ")))
 
+(define ($- t . ts)
+  (if (empty? ts)
+    (happend "-" t)
+    (apply happend
+           #:align 'baseline
+           (add-between (cons t ts) " - "))))
+
 (define ($* . ts)
   (apply happend
          #:align 'baseline
@@ -42,8 +49,6 @@
                                 ($paren t))))
                      ts)])
            (add-between ts2 " "))))
-
-#;(define (tblock-expt ))
 
 ;; TODO: No paren if fraction, or sqrt, or already paren'ed.
 ;; Should we keep the tblock hierarchy instead of reducing it immediately?
@@ -220,7 +225,29 @@
    (make-vertical-bracket "⌊"  '("⎢" "⎣") '("⎢" "⎢" "⎢" "⎢" "⎣") '("⎢" "⎢" "⎢" "⎢" "⎢" "⎣"))
    (make-vertical-bracket "⌋"  '("⎥" "⎦") '("⎥" "⎥" "⎥" "⎥" "⎦") '("⎥" "⎥" "⎥" "⎥" "⎥" "⎦"))))
 
-#;
-(define (vphantom t))
 
+(define (tree-apply t dic)
+  (let loop ([t t])
+    (cond [(and (list? t)
+                (not (empty? (rest t))))
+           (define op (dict-ref dic (first t) #f))
+           (if op
+             (apply op (map loop (rest t)))
+             (happend
+              (first t)
+              ($paren (apply happend (add-between (map loop (rest t)) ", ")))))]
+          [else
+           t])))
+
+(define ($formula tree)
+  (tree-apply
+   tree
+   `((+ . ,$+)
+     (- . ,$-)
+     (* . ,$*)
+     (^ . ,$^)
+     (/ . ,$/)
+     (expt . ,$^)
+     (sqrt . ,$sqrt)
+     (sqr . ,$sqr))))
 
