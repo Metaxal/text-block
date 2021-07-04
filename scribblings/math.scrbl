@@ -4,19 +4,39 @@
                     racket/contract
                     racket/base
                     racket/format]
+         racket/port
          scribble/example
          text-block
          text-block/math]
 
-@title{Text block: maths and formulas}
+@(require scribble/core
+          scribble/html-properties)
 
-@defmodule[text-block/math]
+@(define example-style
+   (make-style "example"
+               (list (make-css-addition "../example.css"))))
 
 @(define the-eval (make-base-eval))
 
 @examples[#:eval the-eval #:hidden
           (require racket/string
-                   text-block/math)]
+                   racket/port
+                   text-block)]
+
+@; Better formatting for unicode 2d text
+@(define-syntax-rule (my-example eval expr)
+   (let ()
+     (define out (eval '(with-output-to-string (λ () expr))))
+     (list (para "Example:")
+           (racketblock expr)
+           (elem
+            #:style example-style
+            (list '() out)))))
+
+
+@title{Text block: maths and formulas}
+
+@defmodule[text-block/math]
 
 @defproc*[([($+ [t tblock/any] ...) tblock?]
            [($/ [t tblock/any] ...) tblock?]
@@ -51,11 +71,10 @@ Each function places a bracket of some shape to the left or right of @racketid[t
 Formats the given racket quoted math expression @racketid[tree] as a @racket[tblock].
 }
 
-@examples[
- #:eval the-eval
- (displayln ($formula '(+ (sqrt
-                           (/ (log (/ (+ x 3)
-                                      (- x 2)))
-                              (- (expt x y) z)))
-                          (f a b c))))]
-
+@(my-example
+  the-eval
+  (displayln ($formula '(+ (sqrt
+                            (/ (log (/ (+ x 3)
+                                       (- x 2)))
+                               (- (expt x y) z)))
+                           (f a b (/ c (+ a b)))))))

@@ -1,7 +1,9 @@
 #lang racket/base
 
-(require "tblock.rkt"
-         "math.rkt")
+(require "math.rkt"
+         "tblock.rkt"
+         "text.rkt")
 
-(provide (all-from-out "tblock.rkt"
-                       "math.rkt"))
+(provide (all-from-out "math.rkt"
+                       "tblock.rkt"
+                       "text.rkt"))

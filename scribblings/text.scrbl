@@ -1,10 +1,10 @@
 #lang scribble/manual
 
-@(require (for-label text-block/justify)
+@(require (for-label text-block/text)
           scribble/example)
 
-@title{Text block: Justify text}
-@defmodule[text-block/justify]
+@title{Text block: text and string utilities}
+@defmodule[text-block/text]
 
 @(define the-eval (make-base-eval))
 
@@ -17,7 +17,7 @@ Splits the given string and justifies it to the specified number of columns.
 
 @examples[#:eval the-eval #:hidden
           (require racket/string
-                   text-block/justify)]
+                   text-block)]
 
 @(examples
   #:eval the-eval

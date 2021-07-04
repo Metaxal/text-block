@@ -1,0 +1,10 @@
+.example {
+  font-family: Consolas, monospace;
+  font-size: 1rem;
+  line-height: normal;
+  white-space: pre-wrap;
+  text-size-adjust: 100%;
+  text-align: left;
+  font-variant-ligatures: none;
+  color: rgb(149,0,149);
+}
