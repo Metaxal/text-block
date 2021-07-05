@@ -67,7 +67,7 @@
     (set! lines (string-split lines "\n" #:trim? #f)))
   (unless (andmap string? lines)
     (raise-argument-error 'make-tblock "(or/c string? (listof string?))" lines))
-  (define w (apply max (map string-length lines)))
+  (define w (if (empty? lines) 0 (apply max (map string-length lines))))
   (define h (length lines))
   (define new-lines
     (for/list ([line (in-list lines)] [i (in-naturals)])
