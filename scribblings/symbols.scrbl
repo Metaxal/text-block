@@ -26,6 +26,7 @@ To access the underlying hash table, use the @racketid[codes] submodule:
           (require (submod text-block/symbols codes))
           (hash-ref codes "zeta")]
 
+@; TODO: use same 'example' style to have the same font?
 The full list of symbols:
 @(tabular
   #:sep @hspace[2]

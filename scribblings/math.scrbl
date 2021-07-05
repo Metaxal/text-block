@@ -14,7 +14,8 @@
 
 @(define example-style
    (make-style "example"
-               (list (make-css-addition "../example.css"))))
+               (list (make-css-addition "example.css"))
+               #;(list (make-css-addition "../example.css"))))
 
 @(define the-eval (make-base-eval))
 

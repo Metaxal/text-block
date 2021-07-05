@@ -15,3 +15,4 @@
 @include-section[(lib "text-block/scribblings/combiners.scrbl")]
 @include-section[(lib "text-block/scribblings/text.scrbl")]
 @include-section[(lib "text-block/scribblings/math.scrbl")]
+@include-section[(lib "text-block/scribblings/symbols.scrbl")]
