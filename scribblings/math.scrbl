@@ -78,3 +78,12 @@ Formats the given racket quoted math expression @racketid[tree] as a @racket[tbl
                                        (- x 2)))
                                (- (expt x y) z)))
                            (f a b (/ c (+ a b)))))))
+
+@(my-example
+  the-eval
+  (displayln ($/ (happend "-b ± " ($sqrt "b² - 4ac"))
+                 ($* 2 'a))))
+
+@(my-example
+  the-eval
+  (displayln (happend )))
