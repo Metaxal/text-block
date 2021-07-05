@@ -1,5 +1,6 @@
 #lang racket/base
 
+
 (module codes racket/base
   (provide codes)
   (define codes
@@ -7,7 +8,9 @@
           ["lt"           . "\u3C"]    ; < LESS THAN
           ["gt"           . "\u3E"]    ; > GREATER THAN
           ["le"           . "\u2264"]  ; ≤ LESS THAN OR EQUAL TO
+          ["leq"          . "\u2264"]  ; ≤ LESS THAN OR EQUAL TO
           ["ge"           . "\u2265"]  ; ≥ GREATER THAN OR EQUAL TO
+          ["geq"          . "\u2265"]  ; ≥ GREATER THAN OR EQUAL TO
           ["plusmn"       . "\uB1"]    ; ± PLUS OR MINUS
           ["ne"           . "\u2260"]  ; ≠ NOT EQUALS
           ["divide"       . "\uF7"]    ; ÷ DIVISION SIGN
@@ -29,6 +32,7 @@
           ["tripleprime"  . "\u2034"]  ; ‴ TRIPLE PRIME (triple quote)
           ["there4"       . "\u2234"]  ; ∴ THEREFORE (Triangular Dots)
           ["sdot"         . "\u22C5"]  ; ⋅ DOT OPERATOR
+          ["cdot"         . "\u00B7"]  ; · center dot
           ["sup0"         . "\u2070"]  ; ₀ SUPERSCRIPT ZERO
           ["^0"           . "\u2070"]  ; ₀ SUPERSCRIPT ZERO
           ["sup1"         . "\uB9"]    ; ¹ SUPERSCRIPT ONE
