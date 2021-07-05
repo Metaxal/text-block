@@ -2,12 +2,11 @@
 (require define2)
 
 ;;; Text blocks that can be combined like pictures.
+;;; Any append operation creates a new rectangular block.
 
 (provide (struct-out tblock)
-         (all-defined-out)
-         )
+         (all-defined-out))
 
-;;; any append operation creates a new rectangular block
 
 (define tblock/any any/c)
 

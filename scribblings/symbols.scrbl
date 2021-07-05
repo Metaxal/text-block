@@ -16,8 +16,8 @@ The @racket[text-block/symbols] module and its submodules provide bindings and a
 to many unicode symbols:
 @examples[#:eval (make-base-eval) #:label #f
           (require text-block/symbols)
-          $zeta]
-The default prefix is @racketid[$]. To change it, use the @racketid[unprefixed] submodule:
+          |@zeta|]
+The default prefix is @racketid[|@|]. To change it, use the @racketid[unprefixed] submodule:
 @examples[#:eval (make-base-eval) #:label #f
           (require (prefix-in ¶ (submod text-block/symbols unprefixed)))
           ¶zeta]

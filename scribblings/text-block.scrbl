@@ -11,7 +11,3 @@
 
 @racketmodname[text-block] is a library to manipulate rectangular blocks
 of unicode text.
-
-@verbatim{
- XXX
-}

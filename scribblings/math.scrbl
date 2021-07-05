@@ -27,7 +27,7 @@
 @(define-syntax-rule (my-example eval expr)
    (let ()
      (define out (eval '(with-output-to-string (λ () expr))))
-     (list (para "Example:")
+     (list #;(para "Example:")
            (racketblock expr)
            (elem
             #:style example-style
@@ -39,30 +39,32 @@
 @defmodule[text-block/math]
 
 @defproc*[([($+ [t tblock/any] ...) tblock?]
+           [($- [t tblock/any] ...) tblock?]
            [($/ [t tblock/any] ...) tblock?]
            [($* [t tblock/any] ...) tblock?]
+           [($sqr  [t tblock/any]) tblock?]
            [($sqrt [t tblock/any]) tblock?]
            [($integral [below tblock/any] [above tblock/any]) tblock?]
-           [($sum [below tblock/any] [above tblock/any]) tblock?]
-           [($product [below tblock/any] [above tblock/any]) tblock?]
+           [($sum      [below tblock/any] [above tblock/any]) tblock?]
+           [($product  [below tblock/any] [above tblock/any]) tblock?]
            )]{
 Compose tblocks horizontally for arithmetic operations.}
 
-@defproc*[([($left-brace [t tblock/any]) tblock?]
+@defproc*[([($left-brace  [t tblock/any]) tblock?]
            [($right-brace [t tblock/any]) tblock?]
-           [($brace [t tblock/any]) tblock?]
-           [($left-paren [t tblock/any]) tblock?]
+           [($brace       [t tblock/any]) tblock?]
+           [($left-paren  [t tblock/any]) tblock?]
            [($right-paren [t tblock/any]) tblock?]
-           [($paren [t tblock/any]) tblock?]
-           [($left-square-bracket [t tblock/any]) tblock?]
+           [($paren       [t tblock/any]) tblock?]
+           [($left-square-bracket  [t tblock/any]) tblock?]
            [($right-square-bracket [t tblock/any]) tblock?]
-           [($square-bracket [t tblock/any]) tblock?]
-           [($left-ceiling [t tblock/any]) tblock?]
+           [($square-bracket       [t tblock/any]) tblock?]
+           [($left-ceiling  [t tblock/any]) tblock?]
            [($right-ceiling [t tblock/any]) tblock?]
-           [($ceiling [t tblock/any]) tblock?]
-           [($left-floor [t tblock/any]) tblock?]
+           [($ceiling       [t tblock/any]) tblock?]
+           [($left-floor  [t tblock/any]) tblock?]
            [($right-floor [t tblock/any]) tblock?]
-           [($floor [t tblock/any]) tblock?]
+           [($floor       [t tblock/any]) tblock?]
            )]{
 Each function places a bracket of some shape to the left or right of @racketid[t], or encloses it with both brackets.
 }
@@ -71,6 +73,7 @@ Each function places a bracket of some shape to the left or right of @racketid[t
 Formats the given racket quoted math expression @racketid[tree] as a @racket[tblock].
 }
 
+Examples:
 @(my-example
   the-eval
   (displayln ($formula '(+ (sqrt
@@ -86,4 +89,13 @@ Formats the given racket quoted math expression @racketid[tree] as a @racket[tbl
 
 @(my-example
   the-eval
-  (displayln (happend )))
+  (displayln (happend |@sigma|
+                      " = "
+                      ($sqrt (happend
+                              ($/ 1 'N)
+                              " "
+                              ($sum "i=1" 'N)
+                              ($sqr ($- ($_ 'x 'i)
+                                        |@mu|)))))))
+
+

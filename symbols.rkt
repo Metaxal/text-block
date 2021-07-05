@@ -501,6 +501,6 @@
   (define-all))
 
 (require (submod "." unprefixed))
-(provide (prefix-out $ (all-from-out (submod "." unprefixed))))
+(provide (prefix-out @ (all-from-out (submod "." unprefixed))))
 
 

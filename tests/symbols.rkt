@@ -4,5 +4,5 @@
          (prefix-in § (submod text-block/symbols unprefixed))
          rackunit)
 
-(check-equal? $zeta "ζ")
+(check-equal? @zeta "ζ")
 (check-equal? §zeta "ζ")
