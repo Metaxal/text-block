@@ -1,8 +1,8 @@
 #lang scribble/manual
-@require[@for-label[text-block
+@require[@for-label[racket/base
                     racket/contract
-                    racket/base
-                    racket/format]
+                    racket/format
+                    text-block]
          text-block
          racket/base]
 
@@ -10,10 +10,10 @@
 
 @defmodule[text-block/tblock]
 
-@defstruct[tblock ([width exact-nonnegative-integer?]
-                   [height exact-nonnegative-integer?]
+@defstruct[tblock ([width    exact-nonnegative-integer?]
+                   [height   exact-nonnegative-integer?]
                    [baseline exact-nonnegative-integer?]
-                   [lines (listof string?)])
+                   [lines    (listof string?)])
            ;#:extra-constructor-name #f
            #:omit-constructor]{
 The @racket[tblock] structure.

@@ -1,9 +1,15 @@
 #lang scribble/manual
 
-@(require (for-label text-block))
+@(require (for-label text-block)
+          "example.rkt")
+
+@(define the-eval (make-eval 'text-block))
+@(require scribble/example)
+@examples[#:eval the-eval #:hidden (require text-block)]
 
 @title{Text block combiners}
 
+@;defmodule[text-block]
 
 @defproc[(happend
           [#:align align (or/c 'top 'center 'bottom 'baseline) 'baseline]
@@ -11,6 +17,8 @@
           [t tblock/any] ...)
          tblock?]{
 Appends the tblocks @racketid[t] horizontally.}
+
+@display-example[the-eval (displayln (happend "A\nA" " " "B\nB\nB\nB" ":\n:" "C\nC" #:align 'center))]
 
 
 @defproc[(vappend [#:align align (one-of/c 'left 'center 'right) 'left]
@@ -24,6 +32,11 @@ If @racketid[t-bl] is not @racket[#f] and @racket[t-bl] is a member of @racket[t
 (according to @racket[eq?]), then the baseline of the returned tblock is on the same line
 as the baseline of @racketid[t-bl].}
 
+@display-example[the-eval (displayln (vappend "Twinkle, twinkle,"
+                                         "Little star,"
+                                         "How I wonder what you are!"
+                                         #:align 'center))]
+
 @defthing[frame-style/c contract?]{
  A contract for @racket[frame] styles.
  Matches @racket[(or/c (one-of/c 'single 'round 'double)
@@ -36,7 +49,15 @@ as the baseline of @racketid[t-bl].}
           [#:style style frame-style/c 'single]
           [#:inset inset exact-nonnegative-integer? 0])
          tblock?]{
+ Adds a frame aronud the tblock @racketid[t].
 
-TODO: example of custom style
+ @display-example[the-eval (displayln (frame "Someone framed me!\nI swear!"))]
+
+ A custom style defines all characters to use as well as the padding character:
+ @display-example[the-eval (displayln (frame "Someone framed me!\nI swear!"
+                                        #:inset 2
+                                        #:style '("(+)"
+                                                  "[.]"
+                                                  "{~}")))]
 }
 

@@ -5,35 +5,13 @@
                     racket/base
                     racket/format]
          racket/port
-         scribble/example
          text-block
-         text-block/math]
+         text-block/math
+         "example.rkt"]
 
-@(require scribble/core
-          scribble/html-properties)
-
-@(define example-style
-   (make-style "example"
-               (list (make-css-addition "example.css"))
-               #;(list (make-css-addition "../example.css"))))
-
-@(define the-eval (make-base-eval))
-
-@examples[#:eval the-eval #:hidden
-          (require racket/string
-                   racket/port
-                   text-block)]
-
-@; Better formatting for unicode 2d text
-@(define-syntax-rule (my-example eval expr)
-   (let ()
-     (define out (eval '(with-output-to-string (λ () expr))))
-     (list #;(para "Example:")
-           (racketblock expr)
-           (elem
-            #:style example-style
-            (list '() out)))))
-
+@(define the-eval (make-eval 'text-block))
+@(require scribble/example)
+@examples[#:eval the-eval #:hidden (require text-block)]
 
 @title{Text block: maths and formulas}
 
@@ -75,28 +53,31 @@ Formats the given racket quoted math expression @racketid[tree] as a @racket[tbl
 }
 
 Examples:
-@(my-example
+@(display-example
   the-eval
-  (displayln ($formula '(+ (sqrt
-                            (/ (log (/ (+ x 3)
-                                       (- x 2)))
-                               (- (expt x y) z)))
-                           (f a b (/ c (+ a b)))))))
+  (displayln
+   ($formula '(+ (sqrt
+                  (/ (log (/ (+ x 3)
+                             (- x 2)))
+                     (- (expt x y) z)))
+                 (f a b (/ c (+ a b)))))))
 
-@(my-example
+@(display-example
   the-eval
-  (displayln ($/ (happend "-b ± " ($sqrt "b² - 4ac"))
-                 ($* 2 'a))))
+  (displayln
+   ($/ (happend "-b ± " ($sqrt "b² - 4ac"))
+       ($* 2 'a))))
 
-@(my-example
+@(display-example
   the-eval
-  (displayln (happend |@sigma|
-                      " = "
-                      ($sqrt (happend
-                              ($/ 1 'N)
-                              " "
-                              ($sum "i=1" 'N)
-                              ($sqr ($- ($_ 'x 'i)
-                                        |@mu|)))))))
+  (displayln
+   (happend |@sigma|
+            " = "
+            ($sqrt (happend
+                    ($/ 1 'N)
+                    " "
+                    ($sum "i=1" 'N)
+                    ($sqr ($- ($_ 'x 'i)
+                              |@mu|)))))))
 
 
