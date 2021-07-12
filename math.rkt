@@ -276,7 +276,8 @@
      (sqr . ,$sqr))))
 
 
-(module+ drracket
+(module+ test
+  (require rackunit)
   (let ()
     (define lines
       '("a if x > 1"
@@ -286,7 +287,11 @@
         "e if x = -1"))
     (for ([n (in-range 1 (+ 1 (length lines)))])
       (for ([b (in-range n)])
-        (displayln ($ceiling (happend "3x + "
-                                      ($left-brace (make-tblock (take lines n) #:baseline b))
-                                      " "))))))
+        (define t
+          ($ceiling (happend "3x + "
+                             ($left-brace (make-tblock (take lines n) #:baseline b))
+                             " ")))
+        (check-equal? (tblock-height t) n)
+        (check-equal? (tblock-baseline t) b)
+        #;(displayln t))))
   )
