@@ -78,6 +78,11 @@
       (string-pad line w align #:char char)))
   (tblock w h baseline new-lines))
 
+(define (baseline! t b)
+  (let ([t (->tblock t)])
+    (set-tblock-baseline! t b)
+    t))
+
 (define (->tblock t)
   (cond [(tblock? t) t]
         [(string? t) (make-tblock t)]

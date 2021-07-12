@@ -29,6 +29,9 @@ Only the @racketid[baseline] field is mutable.}
          tblock?]{
 Returns a new @racket[tblock].}
 
+@defproc[(baseline! (t tblock/any) (b exact-nonnegative-integer?)) tblock?]{
+Sets the baseline of @racketid[t] to @racketid[b] and returns @racketid[t].}
+
 @defproc[(tblock/any [x any/c]) boolean?]{
 A fake contract equivalent to @racket[any/c].
 Used as a placeholder to indicate that the corresponding
