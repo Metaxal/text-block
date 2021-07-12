@@ -16,3 +16,6 @@
 @include-section[(lib "text-block/scribblings/text.scrbl")]
 @include-section[(lib "text-block/scribblings/math.scrbl")]
 @include-section[(lib "text-block/scribblings/symbols.scrbl")]
+
+The package @racketid[text-table] can also be used in combination to @racketmodname[text-block]
+to produce unicode tables.

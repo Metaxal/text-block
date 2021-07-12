@@ -1,8 +1,10 @@
 #lang scribble/manual
 
 @(require (for-label text-block/text
+                     text-block/symbols
                      racket/base)
           (submod text-block/symbols codes)
+          text-block/symbols
           racket/base
           "example.rkt")
 
@@ -32,12 +34,42 @@ To access the underlying hash table, use the @racketid[codes] submodule:
 By default, symbols have a different prefix than functions exported by @racketmodname[text-block/math]
 to avoid name collisions.
 
+
+
+@(require (for-syntax (submod text-block/symbols codes)
+                      racket/base
+                      racket/syntax)
+          scribble/private/manual-bind
+          syntax/parse/define)
+
+@(define-syntax (symbol-defs stx)
+   (syntax-parse stx
+     [(_)
+      (with-syntax ([((id str) ...)
+                     (hash-map codes
+                               (λ (a b) (list (format-id stx #:source stx
+                                                         "@~a" a)
+                                              b)))])
+        #'(list (list #'id str) ...
+            #;(list (defidentifier #'id) str "\n")
+            #;...))]))
+
 @; TODO: use same 'example' style to have the same font?
-@; TODO: index all these elements without defining them with defthing?
 The full list of symbols:
+@;{(tabular
+  #:sep @hspace[2]
+  (cons
+   (list @indexed-racket[|@mu|] "µ" "\n")
+   (for/list ([p (in-list (sort (hash->list codes) string<? #:key car))])
+    (define id-str (car p))
+    (define id (string->symbol (string-append "@" id-str)))
+    (define str (cdr p))
+    (list @indexed-racket[#,id] str "\n"))))}
 @(tabular
   #:sep @hspace[2]
-  (for/list ([p (in-list (sort (hash->list codes) string<? #:key car))])
-    (define id (car p))
-    (define str (cdr p))
-    (list @indexed-racket[#,str] "\n")))
+  (for/list ([p (in-list (sort (symbol-defs) symbol<? #:key (λ (p) (syntax-e (car p)))))])
+    (define id-stx (car p))
+    (define str (cadr p))
+    (list (elem (defidentifier id-stx)
+                #:style "RktValLink") str "\n")))
+
