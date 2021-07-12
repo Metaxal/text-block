@@ -4,8 +4,6 @@
           "example.rkt")
 
 @(define the-eval (make-eval 'text-block))
-@(require scribble/example)
-@examples[#:eval the-eval #:hidden (require text-block)]
 
 @title{Text block combiners}
 

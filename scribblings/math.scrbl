@@ -1,6 +1,7 @@
 #lang scribble/manual
 @require[@for-label[text-block
                     text-block/math
+                    text-block/symbols
                     racket/contract
                     racket/base
                     racket/format]
@@ -10,8 +11,6 @@
          "example.rkt"]
 
 @(define the-eval (make-eval 'text-block))
-@(require scribble/example)
-@examples[#:eval the-eval #:hidden (require text-block)]
 
 @title{Text block: maths and formulas}
 
@@ -28,6 +27,19 @@
            [($product  [below tblock/any] [above tblock/any]) tblock?]
            )]{
 Compose tblocks horizontally for arithmetic operations.}
+
+@defproc*[([($_ [t tblock/any] [t_ tblock/any]) tblock?]
+           [($^ [t tblock/any] [t^ tblock/any]) tblock?]
+           [($^_ [t tblock/any] [t^ tblock/any] [t_ tblock/any]) tblock?]
+           [($_^ [t tblock/any] [t^ tblock/any] [t_ tblock/any]) tblock?]
+           )]{
+Places a tblock as a subscript, as superscript, or as both, relative to @racketid[t].
+ May add parenthesis to avoid ambiguity for the superscripts.
+
+@display-example[the-eval
+                 (displayln ($_ "3x" "log(y)"))
+                 (displayln ($^_ "3x" "super" "sub"))]
+}
 
 @defproc*[([($left-brace  [t tblock/any]) tblock?]
            [($right-brace [t tblock/any]) tblock?]
@@ -46,6 +58,17 @@ Compose tblocks horizontally for arithmetic operations.}
            [($floor       [t tblock/any]) tblock?]
            )]{
 Each function places a bracket of some shape to the left or right of @racketid[t], or encloses it with both brackets.
+
+ @display-example[
+ the-eval
+ (displayln
+  ($ceiling
+   (happend "3x + "
+            ($left-brace (make-tblock
+                          '("a if x > 0"
+                            "b if x < 0"
+                            "c if x = 0")
+                          #:baseline 1)))))]
 }
 
 @defproc[($formula [tree any/c]) tblock?]{

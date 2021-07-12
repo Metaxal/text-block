@@ -8,7 +8,6 @@
 
 @;(define the-eval (make-eval 'text-block))
 @(require scribble/example)
-@;examples[#:eval the-eval #:hidden (require text-block)]
 
 @title{Text block: Unicode symbols}
 @defmodule[#:multi
@@ -30,6 +29,9 @@ To access the underlying hash table, use the @racketid[codes] submodule:
  (require (submod text-block/symbols codes))
  (hash-ref codes "zeta")]
 
+By default, symbols have a different prefix than functions exported by @racketmodname[text-block/math]
+to avoid name collisions.
+
 @; TODO: use same 'example' style to have the same font?
 @; TODO: index all these elements without defining them with defthing?
 The full list of symbols:
@@ -38,4 +40,4 @@ The full list of symbols:
   (for/list ([p (in-list (sort (hash->list codes) string<? #:key car))])
     (define id (car p))
     (define str (cdr p))
-    (list @racket[#,str] "\n")))
+    (list @indexed-racket[#,str] "\n")))
