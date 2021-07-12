@@ -92,6 +92,9 @@
     (set-tblock-baseline! t3 (+ (tblock-height t^) (tblock-baseline t1)))
     t3))
 
+(define ($_^ t1 t_ t^)
+  ($^_ t1 t^ t_))
+
 ;; Takes an operator tblock or multiline string and
 ;; returns a function that takes a below and above tblocks and returns
 ;; a tblock that vappends them and adds a space.
@@ -156,36 +159,56 @@
     (set-tblock-baseline! t2 (+ 1 (tblock-baseline t)))
     t2))
 
-(define ((make-vertical-bracket str1 strs2 strs-odd strs-even) t)
+;; strs-odd has 5 elements
+;; strs-even can have either 5 or 6 elements
+(define ((make-vertical-bracket str1 strs2 strs-odd [strs-even strs-odd]) t)
   (let ([t (->tblock t)])
     (define h (tblock-height t))
     (define b (tblock-baseline t))
+    #;(writeln t)
     (cond [(= 1 h) str1]
           [(= 2 h) (make-tblock (string-join strs2 "\n") #:baseline b)]
           [(odd? h)
            (match strs-odd
              [(list top top-mid center bot-mid bottom)
+              (define n-top-mid (min (- h 3)
+                                     (max 0 (- b 1))))
+              (define n-bot-mid (max 0 (- h n-top-mid 3)))
               (make-tblock
                (string-join
                 (append (list top)
-                        (make-list (max 0 (- b 1)) top-mid)
+                        (make-list n-top-mid top-mid)
                         (list center)
-                        (make-list (max 0 (- h b 2)) bot-mid)
+                        (make-list n-bot-mid bot-mid)
                         (list bottom))
                 "\n")
                #:baseline b)])]
-          [else #;(even? h)
+          [else ;(even? h)
            (match strs-even
+             [(list top top-mid center bot-mid bottom)
+              (define n-top-mid (min (- h 3)
+                                     (max 0 (- b 1))))
+              (define n-bot-mid (- h n-top-mid 3))
+              (make-tblock
+               (string-join
+                (append (list top)
+                        (make-list n-top-mid top-mid)
+                        (list center)
+                        (make-list n-bot-mid bot-mid)
+                        (list bottom))
+                "\n")
+               #:baseline b)]
              [(list top top-mid top-center bot-center bot-mid bottom)
-                (make-tblock
-                 (string-join
-                  (append (list top)
-                          (make-list (max 0 (- b 2)) top-mid)
-                          (list top-center bot-center)
-                          (make-list (max 0 (- h b 2)) bot-mid)
-                          (list bottom))
-                  "\n")
-                 #:baseline b)])])))
+              ; special treatment: two symbols are used at the center
+              (make-tblock
+               (string-join
+                (append (list top)
+                        (make-list (max 0 (- b 2)) top-mid)
+                        (list top-center bot-center)
+                        (make-list (max 0 (- h b 4)) bot-mid)
+                        (list bottom))
+                "\n")
+               #:baseline b)])])))
 
 (define (make-bracketing make-left-bracket make-right-bracket)
   (values (λ (t) (let ([t (->tblock t)])
@@ -195,35 +218,36 @@
           (λ (t) (let ([t (->tblock t)])
                    (happend (make-left-bracket t) t (make-right-bracket t) #:align 'baseline)))))
 
-;; WARNING: Naming inconsistence with tblock-sum
-;; WARNING: Name clashes with normal racket
 (define-values ($left-brace $right-brace $brace)
   (make-bracketing
-   (make-vertical-bracket "{"  '("⎰" "⎱") '("⎧" "⎪" "⎨" "⎪" "⎩") '("⎧" "⎪" "⎪" "⎨" "⎪" "⎩"))
-   (make-vertical-bracket "}"  '("⎱" "⎰") '("⎫" "⎪" "⎬" "⎪" "⎭") '("⎫" "⎪" "⎪" "⎬" "⎪" "⎭")))
+   (make-vertical-bracket "{"  '("⎭" "⎫") '("⎧" "⎪" "⎨" "⎪" "⎩"))
+   (make-vertical-bracket "}"  '("⎩" "⎧") '("⎫" "⎪" "⎬" "⎪" "⎭")))
   #;(make-bracketing
+   (make-vertical-bracket "{"  '("⎰" "⎱") '("⎧" "⎪" "⎨" "⎪" "⎩"))
+   (make-vertical-bracket "}"  '("⎱" "⎰") '("⎫" "⎪" "⎬" "⎪" "⎭")))
+  #;(make-bracketing ; 2 symbols at the middle
    (make-vertical-bracket "{"  '("⎰" "⎱") '("⎧" "⎪" "⎨" "⎪" "⎩") '("⎧" "⎪" "⎭" "⎫" "⎪" "⎩"))
    (make-vertical-bracket "}"  '("⎱" "⎰") '("⎫" "⎪" "⎬" "⎪" "⎭") '("⎫" "⎪" "⎩" "⎧" "⎪" "⎭"))))
 
 (define-values ($left-paren $right-paren $paren)
   (make-bracketing
-   (make-vertical-bracket "("  '("⎛" "⎝") '("⎛" "⎜" "⎜" "⎜" "⎝") '("⎛" "⎜" "⎜" "⎜" "⎜" "⎝"))
-   (make-vertical-bracket ")"  '("⎞" "⎠") '("⎞" "⎟" "⎟" "⎟" "⎠") '("⎞" "⎟" "⎟" "⎟" "⎟" "⎠"))))
+   (make-vertical-bracket "("  '("⎛" "⎝") '("⎛" "⎜" "⎜" "⎜" "⎝"))
+   (make-vertical-bracket ")"  '("⎞" "⎠") '("⎞" "⎟" "⎟" "⎟" "⎠"))))
 
 (define-values ($left-square-bracket $right-square-bracket $square-bracket)
   (make-bracketing
-   (make-vertical-bracket "["  '("⎡" "⎣") '("⎡" "⎢" "⎢" "⎢" "⎣") '("⎡" "⎢" "⎢" "⎢" "⎢" "⎣"))
-   (make-vertical-bracket "]"  '("⎤" "⎦") '("⎤" "⎥" "⎥" "⎥" "⎦") '("⎤" "⎥" "⎥" "⎥" "⎥" "⎦"))))
+   (make-vertical-bracket "["  '("⎡" "⎣") '("⎡" "⎢" "⎢" "⎢" "⎣"))
+   (make-vertical-bracket "]"  '("⎤" "⎦") '("⎤" "⎥" "⎥" "⎥" "⎦"))))
 
 (define-values ($left-ceiling $right-ceiling $ceiling)
   (make-bracketing
-   (make-vertical-bracket "⌈"  '("⎡" "⎢") '("⎡" "⎢" "⎢" "⎢" "⎢") '("⎡" "⎢" "⎢" "⎢" "⎢" "⎢"))
-   (make-vertical-bracket "⌉"  '("⎤" "⎥") '("⎤" "⎥" "⎥" "⎥" "⎥") '("⎤" "⎥" "⎥" "⎥" "⎥" "⎥"))))
+   (make-vertical-bracket "⌈"  '("⎡" "⎢") '("⎡" "⎢" "⎢" "⎢" "⎢"))
+   (make-vertical-bracket "⌉"  '("⎤" "⎥") '("⎤" "⎥" "⎥" "⎥" "⎥"))))
 
 (define-values ($left-floor $right-floor $floor)
   (make-bracketing
-   (make-vertical-bracket "⌊"  '("⎢" "⎣") '("⎢" "⎢" "⎢" "⎢" "⎣") '("⎢" "⎢" "⎢" "⎢" "⎢" "⎣"))
-   (make-vertical-bracket "⌋"  '("⎥" "⎦") '("⎥" "⎥" "⎥" "⎥" "⎦") '("⎥" "⎥" "⎥" "⎥" "⎥" "⎦"))))
+   (make-vertical-bracket "⌊"  '("⎢" "⎣") '("⎢" "⎢" "⎢" "⎢" "⎣"))
+   (make-vertical-bracket "⌋"  '("⎥" "⎦") '("⎥" "⎥" "⎥" "⎥" "⎦"))))
 
 
 (define (tree-apply t dic)
@@ -251,3 +275,18 @@
      (sqrt . ,$sqrt)
      (sqr . ,$sqr))))
 
+
+(module+ drracket
+  (let ()
+    (define lines
+      '("a if x > 1"
+        "b if x < -1"
+        "c if x = 0"
+        "d if x = 1"
+        "e if x = -1"))
+    (for ([n (in-range 1 (+ 1 (length lines)))])
+      (for ([b (in-range n)])
+        (displayln ($ceiling (happend "3x + "
+                                      ($left-brace (make-tblock (take lines n) #:baseline b))
+                                      " "))))))
+  )
