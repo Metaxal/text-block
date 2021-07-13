@@ -5,7 +5,7 @@
 
 @(define the-eval (make-eval 'text-block))
 
-@title{Text block combiners}
+@title{Text block combiners and basic operations}
 
 @;defmodule[text-block]
 
@@ -51,11 +51,18 @@ as the baseline of @racketid[t-bl].}
 
  @display-example[the-eval (displayln (frame "Someone framed me!\nI swear!"))]
 
- A custom style defines all characters to use as well as the padding character:
+ A custom style defines all characters of the frame as well as the padding character:
  @display-example[the-eval (displayln (frame "Someone framed me!\nI swear!"
                                         #:inset 2
                                         #:style '("(+)"
                                                   "[.]"
                                                   "{~}")))]
+}
+
+@defproc*[([(overline [t tblock/any]) tblock?]
+           [(underline [t tblock/any]) tblock?])]{
+Draws a line above or below the text.
+
+@display-example[the-eval (displayln (happend (overline "hello") " " (underline 'there) "!"))]
 }
 

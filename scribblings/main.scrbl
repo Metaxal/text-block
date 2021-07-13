@@ -9,6 +9,9 @@
 @bold{Note:} In DrRacket, to avoid intermediate blank pixel lines, uncheck
 @tt{Edit|Preferences…|Editing|General Editing|Add one pixel of extra space between lines}.
 
+@bold{Note:} The package @racketid[text-table] can also be used in combination to @racketmodname[text-block]
+to produce unicode tables.
+
 @table-of-contents[]
 
 @include-section[(lib "text-block/scribblings/datatype.scrbl")]
@@ -17,5 +20,3 @@
 @include-section[(lib "text-block/scribblings/math.scrbl")]
 @include-section[(lib "text-block/scribblings/symbols.scrbl")]
 
-The package @racketid[text-table] can also be used in combination to @racketmodname[text-block]
-to produce unicode tables.

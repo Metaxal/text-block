@@ -149,7 +149,7 @@
     (define t2
       (vappend
        #:align 'left
-       (string-append " " (make-string (+ w 1) #\▁))
+       (string-append " " (make-string (+ w 1) #\_ #;#\▁))
        (happend
         #:align 'bottom
         (string-join (append (make-list (- h 1) " ▏")

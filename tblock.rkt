@@ -126,9 +126,9 @@
     (make-tblock lines #:baseline htop)))
 
 (define (vappend #:align [align 'left]
-                        #:pad-char [char #\space]
-                        #:baseline-of [t-bl #f]
-                        . ts)
+                 #:pad-char [char #\space]
+                 #:baseline-of [t-bl #f]
+                 . ts)
   (let ([ts (map ->tblock ts)])
     (when (and t-bl (not (memq t-bl ts)))
       (error "tblock-append: Cannot find baseline text-block in given list of text blocks"))
@@ -249,5 +249,18 @@
        (make-tblock
         '("This text is" "#:align 'center" "and" "`frame`d with" "#:style 'single")
         #:align 'center)))))))
+
+(define (overline t)
+  (let ([t (->tblock t)])
+    (vappend (make-string (tblock-width t) #;#\─ #\_)
+             t
+             #:baseline-of t)))
+
+(define (underline t)
+  (let ([t (->tblock t)])
+    (vappend t
+             (make-string (tblock-width t) #;#\─ #\‾)
+             #:baseline-of t)))
+
 
 
