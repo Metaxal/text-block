@@ -1,6 +1,7 @@
 #lang racket/base
 
-(require scribble/example
+(require define2
+         scribble/example
          scribble/core
          scribble/manual
          scribble/html-properties

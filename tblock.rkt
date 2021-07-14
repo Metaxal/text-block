@@ -1,12 +1,14 @@
 #lang racket
-(require define2)
+(require define2
+         racket/contract)
 
 ;;; Text blocks that can be combined like pictures.
 ;;; Any append operation creates a new rectangular block.
 
 (provide (struct-out tblock)
+         (contract-out
+          )
          (all-defined-out))
-
 
 (define tblock/any any/c)
 
@@ -261,6 +263,3 @@
     (vappend t
              (make-string (tblock-width t) #;#\─ #\‾)
              #:baseline-of t)))
-
-
-
