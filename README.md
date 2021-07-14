@@ -13,48 +13,48 @@ The following code:
 
 (displayln
  (happend
-  ($product "x=1" ($floor ($+ ($/ "X²" "2") "3")))
+  #:align 'baseline
+  ($product #;$sum "x = 1" ($floor ($+ ($/ ($sqr "X") "2") "3")))
   "exp"
   ($brace ($/ ($sqrt
                ($+ (happend
                     "log"
-                    ($paren ($/ ($* ($/ 2 3) "x")
-                                "bx³-3")))
+                    ($paren ($/ (happend ($/ 2 3) " x + " @2/3 "y")
+                                (happend "bx" @^- @^1 "-3"))))
                    (happend
-                    ($integral "3y" "∞")
+                    ($integral "3y" @infty)
                     (happend
-                     ($/ "ax²+2"
-                         "bx³-3")
+                     ($/ (happend "a" ($sqr "x") "+2")
+                         (happend "bx" @^3 "-3"))
                      " dx"))
                    "2x+3"))
-              ($+ ($/ "ax²+2"
-                      "bx³-3")
-                  ($/ ($square-bracket
+              ($+ ($/ (happend "ax" @^- @^2 "+2")
+                      (happend "bx" @^4 "-3"))
+                  ($/ ($ceiling
                        ($/ "ax²+2"
                            "bx³-3"))
-                      ($paren (happend ($sum "n=1" "N") "log(n)"))))))))
-
+                      ($paren (happend ($sum "n=1" "N") "log" @_2 " n"))))))))
 ```
 produces this output (the Markdown CSS style cannot be changed, so this may render poorly):
 ```
-            ⎧ ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁⎫
-            ⎪ ▏   ⎛⎛2⎞  ⎞                     ⎪
-⎢X²    ⎥    ⎪ ▏   ⎜⎜─⎟ x⎟   ∞                 ⎪
-⎢── + 3⎥    ⎪ ▏   ⎜⎝3⎠  ⎟   ⎧  ax²+2          ⎪
-⎣2     ⎦    ⎪ ▏log⎜─────⎟ + ⎪  ───── dx + 2x+3⎪
-  ▁▁▁▁      ⎪ ▏   ⎝bx³-3⎠   ⎭  bx³-3          ⎪
-   ⎜⎟       ⎪╲▏             3y                ⎪
-   ⎜⎟    exp⎨─────────────────────────────────⎬
-  x=1       ⎪                ⎡ax²+2⎤          ⎪
-            ⎪                ⎢─────⎥          ⎪
-            ⎪      ax²+2     ⎣bx³-3⎦          ⎪
-            ⎪      ───── + ────────────       ⎪
-            ⎪      bx³-3   ⎛ N        ⎞       ⎪
-            ⎪              ⎜▁▁▁       ⎟       ⎪
-            ⎪              ⎜╲         ⎟       ⎪
-            ⎪              ⎜╱   log(n)⎟       ⎪
-            ⎪              ⎜▔▔▔       ⎟       ⎪
-            ⎩              ⎝n=1       ⎠       ⎭
+            ⎧ ___________________________________⎫
+            ⎪ ▏   ⎛2       ⎞                     ⎪
+⎢X²    ⎥    ⎪ ▏   ⎜─ x + ⅔y⎟   ∞                 ⎪
+⎢── + 3⎥    ⎪ ▏   ⎜3       ⎟   ⎧  ax²+2          ⎪
+⎣2     ⎦    ⎪ ▏log⎜────────⎟ + ⎪  ───── dx + 2x+3⎪
+  ▁▁▁▁      ⎪ ▏   ⎝ bx⁻¹-3 ⎠   ⎭  bx³-3          ⎪
+   ⎜⎟       ⎪╲▏                3y                ⎪
+   ⎜⎟    exp⎨────────────────────────────────────⎬
+ x = 1      ⎪                  ⎡ax²+2⎤           ⎪
+            ⎪                  ⎢─────⎥           ⎪
+            ⎪       ax⁻²+2     ⎢bx³-3⎥           ⎪
+            ⎪       ────── + ────────────        ⎪
+            ⎪       bx⁴-3    ⎛ N        ⎞        ⎪
+            ⎪                ⎜▁▁▁       ⎟        ⎪
+            ⎪                ⎜╲         ⎟        ⎪
+            ⎪                ⎜╱   log₂ n⎟        ⎪
+            ⎪                ⎜▔▔▔       ⎟        ⎪
+            ⎩                ⎝n=1       ⎠        ⎭
 ```
 Here's what it looks like with proper rendering:
 
