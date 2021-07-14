@@ -6,7 +6,6 @@
 
 ;;; Find a unicode symbol: https://shapecatcher.com/
 
-
 (define ($/ t1 . ts)
   (let-values ([(t1 t2)
                 (if (empty? ts)
@@ -64,8 +63,15 @@
 (define ($sqr t)
   (happend (maybe-paren t) "²"))
 
-(define ($^ t1 t2)
+(define ($cube t)
+  (happend (maybe-paren t) "³"))
+
+(define ($expt t1 t2)
   (let ([t1 (maybe-paren (->tblock t1))] [t2 (->tblock t2)])
+    ($^ t1 t2)))
+
+(define ($^ t1 t2)
+  (let ([t1 (->tblock t1)] [t2 (->tblock t2)])
     (define t3
       (vappend (happend (make-string (tblock-width t1) #\space) t2)
                       t1
@@ -83,7 +89,7 @@
     t3))
 
 (define ($^_ t1 t^ t_)
-  (let ([t1 (maybe-paren (->tblock t1))] [t^ (->tblock t^)])
+  (let ([t1 (->tblock t1)] [t^ (->tblock t^)])
     (define t3
       (vappend (happend (make-string (tblock-width t1) #\space) t^)
                       t1
@@ -139,8 +145,6 @@
 ⎪
 ⎭"
     #:baseline 1)))
-
-
 
 (define ($sqrt t)
   (let ([t (->tblock t)])
@@ -211,12 +215,12 @@
                #:baseline b)])])))
 
 (define (make-bracketing make-left-bracket make-right-bracket)
-  (values (λ (t) (let ([t (->tblock t)])
-                   (happend (make-left-bracket t) t #:align 'baseline)))
-          (λ (t) (let ([t (->tblock t)])
-                   (happend t (make-right-bracket t) #:align 'baseline)))
-          (λ (t) (let ([t (->tblock t)])
-                   (happend (make-left-bracket t) t (make-right-bracket t) #:align 'baseline)))))
+  (values (λ ts (let ([t (apply happend (map ->tblock ts))])
+                  (happend (make-left-bracket t) t)))
+          (λ ts (let ([t (apply happend (map ->tblock ts))])
+                  (happend t (make-right-bracket t))))
+          (λ ts (let ([t (apply happend (map ->tblock ts))])
+                  (happend (make-left-bracket t) t (make-right-bracket t))))))
 
 (define-values ($left-brace $right-brace $brace)
   (make-bracketing
@@ -269,9 +273,9 @@
    `((+ . ,$+)
      (- . ,$-)
      (* . ,$*)
-     (^ . ,$^)
+     (^ . ,$expt)
      (/ . ,$/)
-     (expt . ,$^)
+     (expt . ,$expt)
      (sqrt . ,$sqrt)
      (sqr . ,$sqr))))
 
