@@ -2,7 +2,7 @@
 (define collection "text-block")
 (define deps '("define2"
                "base"))
-(define build-deps '("scribble-lib" "racket-doc" "rackunit-lib"))
+(define build-deps '("scribble-lib" "racket-doc" "rackunit-lib" "sandbox-lib"))
 (define scribblings '(("scribblings/main.scrbl" (multi-page) ("Text block") "text-block")))
 (define pkg-desc "Combine unicode 2d text blocks, display unicode math formula")
 (define version "0.0")

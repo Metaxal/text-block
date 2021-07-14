@@ -4,12 +4,8 @@
          scribble/core
          scribble/manual
          scribble/html-properties
-         (only-in scribble/eval interaction-eval)
-         racket/port
-         racket/pretty
          racket/runtime-path
          racket/sandbox
-         syntax/parse/define
          (for-syntax racket/base syntax/parse))
 
 (define-runtime-path base-dir "..")
