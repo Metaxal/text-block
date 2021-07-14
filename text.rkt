@@ -1,10 +1,25 @@
 #lang racket/base
 (require define2
+         racket/contract
          racket/list
          racket/string
          racket/math)
 
-(provide (all-defined-out))
+(provide
+ (contract-out
+  #:unprotected-submodule no-contract
+  [make-list-of-k-sum-to-n (-> exact-positive-integer? exact-positive-integer? any)]
+  [justify-line (->* [(listof string?) exact-positive-integer?]
+                     [#:last-line? any/c]
+                     any)]
+  [align-line (-> (listof string?)
+                  exact-positive-integer?
+                  (one-of/c 'none 'left 'center 'align)
+                  any)]
+  [text->lines (->* [string? exact-positive-integer?]
+                    [#:align (one-of/c 'none 'left 'center 'right 'justified)]
+                    any)]
+  ))
 
 (define (make-list-of-k-sum-to-n k n)
   (define-values (q r) (quotient/remainder n k))
@@ -28,8 +43,7 @@
       (check-equal? (length l) k)
       (check-equal? (apply + l) n)
       (check-true (andmap nonnegative-integer? l))
-      (check <= (- (apply max l) (apply min l)) 1)))
-  )
+      (check <= (- (apply max l) (apply min l)) 1))))
 
 (define (justify-line strs ncol #:last-line? [last-line? #f])
   (cond [(or (empty? (rest strs))
