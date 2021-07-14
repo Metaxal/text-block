@@ -1,6 +1,5 @@
 #lang racket/base
 
-
 ;; TODO Also include all of
 ;; https://docs.racket-lang.org/drracket/Keyboard_Shortcuts.html
 
@@ -14,7 +13,7 @@
           ["leq"          . "\u2264"]  ; ≤ LESS THAN OR EQUAL TO
           ["ge"           . "\u2265"]  ; ≥ GREATER THAN OR EQUAL TO
           ["geq"          . "\u2265"]  ; ≥ GREATER THAN OR EQUAL TO
-          ["plusmn"       . "\uB1"]    ; ± PLUS OR MINUS
+          ["plusminus"    . "\uB1"]    ; ± PLUS OR MINUS
           ["pm"           . "\uB1"]    ; ± PLUS OR MINUS
           ["ne"           . "\u2260"]  ; ≠ NOT EQUALS
           ["neq"          . "\u2260"]  ; ≠ NOT EQUALS
@@ -84,11 +83,13 @@
           ["^="           . "\u207C"]  ; ⁼
           ["^("           . "\u207D"]  ; ⁽
           ["^)"           . "\u207E"]  ; ⁾
+          ["^/"           . "𝄍"]       ; ⸍ RIGHT RAISED OMISSION BRACKET or ⸍ 𝄍, ᐟ
           ["_+"           . "\u208A"]  ; ₊
           ["_-"           . "\u208B"]  ; ₋
           ["_="           . "\u208C"]  ; ₌
           ["_("           . "\u208D"]  ; ₍
           ["_)"           . "\u208E"]  ; ₎
+          ["_/"           . "⸝"]       ; RIGHT LOW PARAPHRASE BRACKET
           ["lang"         . "\u2329"]  ; 〈 LEFT ANGLE BRACKET
           ["langle"       . "⟨"]       ; ⟨ LEFT ANGLE BRACKET
           ["rang"         . "\u232A"]  ; 〉 RIGHT ANGLE BRACKET
@@ -272,6 +273,7 @@
           ["omicron"   . "\u03BF"]  ;  ο Greek small letter omicron
           ["pi"        . "\u03C0"]  ;  π Greek small letter pi
           ["rho"       . "\u03C1"]  ;  ρ Greek small letter rho
+          ["varrho"    . "ϱ"]
           ["sigmaf"    . "\u03C2"]  ;  ς Greek small letter final sigma
           ["sigma"     . "\u03C3"]  ;  σ Greek small letter sigma
           ["varsigma"  . "ς"]       ;  ς Greek small letter sigma
@@ -526,9 +528,9 @@
           ["natural"           . "♮"]
           ["triangle"          . "△"]
           ["circ"              . "∘"]
-          ["varrho"            . "ϱ"]
           ["square"            . "□"]
           ["mp"                . "∓"]
+          ["minusplus"         . "∓"]
           ["bigtriangleup"     . "△"]
           ["uplus"             . "⊎"]
           ["bigtriangledown"   . "▽"]
