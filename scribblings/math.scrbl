@@ -95,6 +95,18 @@ or encloses them with both brackets.
                           #:baseline 1)))))]
 }
 
+@defproc*[([($overbrace  [t tblock/any] [t^ tblock/any]) tblock?]
+           [($underbrace [t tblock/any] [t_ tblock/any]) tblock?])]{
+ Places a brace and @racket[t^] or @racket[t_] above or below the tblock @racketid[t].
+ The baseline of the returned tblock is the same as that of @racket[t].
+
+ @display-example[
+ the-eval
+ (displayln
+  (happend ($overbrace " Mon verre est vide. " "optimiste…")
+           ($underbrace " C'est un message. " "…ayant soif")))]
+}
+
 @defproc[($formula [tree any/c]) tblock?]{
 Formats the given racket quoted math expression @racketid[tree] as a @racket[tblock].
 }

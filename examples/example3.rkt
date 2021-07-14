@@ -39,10 +39,10 @@
        '("This text is" "#:align 'center" "and" "`frame`d with" "#:style 'single")
        #:align 'center))
      " "
-     "The squirrel has saved as many acorns as"
+     (happend "The " (underline "squirrel") " has gathered N acorns: ")
      " "
      (happend
-      "log"
+      "N = log"
       ($paren
        ($sum "n = 0" ($floor ($/ "N(N+1)" 2)))
        "n(n+1)"))))
@@ -50,16 +50,18 @@
    (happend "The " (underline "fox") "'s diet is pretty tight:")
    (happend
     2 ($sqrt "T") " - 2"
-    " " @leq " "
-    ($_^ ($square-bracket 2 ($sqrt "t")) "t=1" "T")
-    " = "
-    ($integral "t=1" "T") ($/ 1 ($sqrt "t")) " dt"
-    " " @leq " "
+    "  " @leq "  "
+    
+    ;" = "
+    ($underbrace (happend " " ($integral "t=1" "T") ($/ 1 ($sqrt "t")) " dt ")
+                 (happend "= " ($_^ ($square-bracket 2 ($sqrt "t")) "t=1" "T")))
+    "  " @leq "  "
     ($sum "t=1" "T") ($/ 1 ($sqrt "t"))
-    " " @leq " "
-    ($integral "t=0" "T-1") ($/ 1 ($sqrt "t")) " dt"
-    " = "
-    ($_^ ($square-bracket 2 ($sqrt "t")) "t=0" "T-1")
-    " " @leq " "
+    "  " @leq "  "
+    ($underbrace (happend " " ($integral "t=0" "T-1") ($/ 1 ($sqrt "t")) " dt ")
+                 (happend "= "($_^ ($square-bracket 2 ($sqrt "t")) "t=0" "T-1")))
+    ;" = "
+    
+    "  " @leq "  "
     2 ($sqrt "T")))))
 

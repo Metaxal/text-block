@@ -153,7 +153,7 @@
     (define t2
       (vappend
        #:align 'left
-       (string-append " " (make-string (+ w 1) #\_ #;#\▁))
+       (string-append " " (make-string (+ w 1) #;#\_ #\▁ #;#\⎯))
        (happend
         #:align 'bottom
         (string-join (append (make-list (- h 1) " ▏")
@@ -170,7 +170,8 @@
     (define h (tblock-height t))
     (define b (tblock-baseline t))
     #;(writeln t)
-    (cond [(= 1 h) str1]
+    (cond [(= 0 h) (->tblock "")]
+          [(= 1 h) (->tblock str1)]
           [(= 2 h) (make-tblock (string-join strs2 "\n") #:baseline b)]
           [(odd? h)
            (match strs-odd
@@ -252,6 +253,36 @@
   (make-bracketing
    (make-vertical-bracket "⌊"  '("⎢" "⎣") '("⎢" "⎢" "⎢" "⎢" "⎣"))
    (make-vertical-bracket "⌋"  '("⎥" "⎦") '("⎥" "⎥" "⎥" "⎥" "⎦"))))
+
+(define ($underbrace t t_)
+  ; (#\─      ("│" "│" "│") ("╭" "┬" "╮") ("├" "┼" "┤") ("╰" "┴" "╯"))
+  (let ([t (->tblock t)] [t_ (->tblock t_)])
+    (define w (tblock-width t))
+    (define br
+      (case w
+        [(0) ""]
+        [(1) "⏟"]
+        [(2) "╰╯"]
+        [else
+         (define wl (quotient (- w 3) 2))
+         (define wr (- w 3 wl))
+         (happend "╰" (make-string wl #\─) "┬" (make-string wr #\─) "╯")]))
+    (vappend t br t_ #:baseline-of t #:align 'center)))
+
+(define ($overbrace t t^)
+  ; (#\─      ("│" "│" "│") ("╭" "┬" "╮") ("├" "┼" "┤") ("╰" "┴" "╯"))
+  (let ([t (->tblock t)] [t^ (->tblock t^)])
+    (define w (tblock-width t))
+    (define br
+      (case w
+        [(0) ""]
+        [(1) "⏞"]
+        [(2) "╭╮"]
+        [else
+         (define wl (quotient (- w 3) 2))
+         (define wr (- w 3 wl))
+         (happend "╭" (make-string wl #\─) "┴" (make-string wr #\─) "╮")]))
+    (vappend t^ br t #:baseline-of t #:align 'center)))
 
 
 (define (tree-apply t dic)
