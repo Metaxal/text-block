@@ -52,11 +52,13 @@ as the baseline of @racketid[t-bl].}
  @display-example[the-eval (displayln (frame "Someone framed me!\nI swear!"))]
 
  A custom style defines all characters of the frame as well as the padding character:
- @display-example[the-eval (displayln (frame "Someone framed me!\nI swear!"
-                                        #:inset 2
-                                        #:style '("(+)"
-                                                  "[.]"
-                                                  "{~}")))]
+ @display-example[the-eval
+                  (displayln (frame (make-tblock "Someone framed me!\nI swear!"
+                                                 #:pad-char #\.)
+                                    #:inset 2
+                                    #:style '("(+)"
+                                              "[.]"
+                                              "{~}")))]
 }
 
 @defproc*[([(overline [t tblock/any]) tblock?]

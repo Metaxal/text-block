@@ -4,8 +4,11 @@
                     text-block/symbols
                     racket/contract
                     racket/base
-                    racket/format]
+                    racket/format
+                    racket/string
+                    racket/require]
          racket/port
+         scribble/example
          text-block
          text-block/math
          "example.rkt"]
@@ -15,6 +18,19 @@
 @title{Text block: maths and formulas}
 
 @defmodule[text-block/math]
+
+The functions exported by @racketmodname[text-block/math] are prefixed with @racketid[$]
+to avoid name collisions with Racket's arithmetic functions.
+The default prefix can be changed on @racket[require] with @racket[filtered-in], for example:
+@examples[#:eval (make-base-eval #:lang 'racket/base)
+ (require racket/require
+          (for-syntax racket/base racket/string)
+          (filtered-in (lambda (name)
+                         (and (char=? #\$ (string-ref name 0))
+                              (string-replace name "$" "¶")))
+                       text-block/math))
+ (¶+ 'a 'b)]
+
 
 @defproc*[([($+ [t tblock/any] ...) tblock?]
            [($- [t tblock/any] ...) tblock?]
