@@ -58,7 +58,7 @@ produces this output (the Markdown CSS style cannot be changed, so this may rend
 ```
 Here's what it looks like with proper rendering:
 
-![equation](img/eq-screenshot.png)
+![equation](img/eq-screenshot.png#1)
 
 To obtain this result in DrRacket, uncheck
 `Preferences|Editing|General Editing|Add one pixel of extra space between lines`.
