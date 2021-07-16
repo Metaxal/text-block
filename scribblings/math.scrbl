@@ -88,7 +88,7 @@ or encloses them with both brackets.
  (displayln
   ($ceiling
    (happend "3x + "
-            ($left-brace (make-tblock
+            ($left-brace (lines->tblock
                           '("a if x > 0"
                             "b if x < 0"
                             "c if x = 0")

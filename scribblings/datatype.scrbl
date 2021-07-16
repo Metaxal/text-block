@@ -17,15 +17,15 @@
            ;#:extra-constructor-name #f
            #:omit-constructor]{
 The @racket[tblock] structure.
-Do not use @racket[tblock] for construction, use @racket[make-tblock] instead.
+Do not use @racket[tblock] for construction, use @racket[lines->tblock] or @racket[->tblock] instead.
 
 Only the @racketid[baseline] field is mutable.}
 
 
-@defproc[(make-tblock (lines (or/c string? (listof string?)))
-                     [#:align align (one-of/c 'left 'center 'right) 'left]
-                     [#:pad-char pad-char char? #\space]
-                     [#:baseline baseline exact-nonnegative-integer? 0])
+@defproc[(lines->tblock (lines (or/c string? (listof string?)))
+                        [#:align align (one-of/c 'left 'center 'right) 'left]
+                        [#:pad-char pad-char char? #\space]
+                        [#:baseline baseline exact-nonnegative-integer? 0])
          tblock?]{
 Returns a new @racket[tblock].}
 

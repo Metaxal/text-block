@@ -9,6 +9,30 @@
 
 @;defmodule[text-block]
 
+@defproc[(make-tblock [nrow exact-nonnegative-integer?]
+                      [ncol exact-nonnegative-integer?]
+                      [char char? #\space])
+         tblock]{
+Returns a new tblock with @racketid[nrow] rows and @racketid[ncol] columns
+ filled with the character @racketid[char].
+
+ @display-example[the-eval (displayln (make-tblock 5 10 #\*))]
+}
+
+@defproc[(build-tblock [nrow exact-nonnegative-integer?]
+                       [ncol exact-nonnegative-integer?]
+                       [get-char (-> exact-nonnegative-integer?
+                                     exact-nonnegative-integer?
+                                     char?)])
+         tblock?]{
+Returns a new tblock with @racketid[nrow] rows and @racketid[ncol] columns
+ and calls @racket[get-char] for each (row, column) to obtain the corresponding character.
+
+ @display-example[the-eval
+                  (displayln
+                   (build-tblock 2 26 (λ (row col) (integer->char (+ 65 col (* row 32))))))]
+}
+
 @defproc[(happend [#:align align (or/c 'top 'center 'bottom 'baseline) 'baseline]
                   [#:pad-char pad-char char? #\space]
                   [t tblock/any] ...)
@@ -60,13 +84,13 @@ as the baseline of @racketid[t-bl].
  or a symbolic value---and similarly for @racketid[cpos].
 
  @display-example[the-eval
-                  (displayln (superimpose "........\n........\n........\n........\n"
+                  (displayln (superimpose (make-tblock 8 4 #\.)
                                           "AB\nCD"
                                           'bottom 'right))
-                  (displayln (superimpose "........\n........\n........\n........\n"
+                  (displayln (superimpose (make-tblock 8 4 #\.)
                                           "AB\nCD"
                                           1 'left))
-                  (displayln (superimpose (make-tblock (make-list 10 (make-string 20 #\.)))
+                  (displayln (superimpose (make-tblock 10 20 #\.)
                                           "AB\nCD"
                                           'center
                                           (λ (w1 w2) (exact-truncate (* 3/4 (- w1 w2))))))]
@@ -90,7 +114,7 @@ as the baseline of @racketid[t-bl].
 
  A custom style defines all characters of the frame as well as the padding character:
  @display-example[the-eval
-                  (displayln (frame (make-tblock "Someone framed me!\nI swear!"
+                  (displayln (frame (lines->tblock "Someone framed me!\nI swear!"
                                                  #:pad-char #\.)
                                     #:inset 2
                                     #:style '("(+)"

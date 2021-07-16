@@ -13,7 +13,7 @@
    " "
    (happend
     #:align 'top
-    (make-tblock
+    (lines->tblock
      (text->lines
       #:align 'justified
       (string-append "Here's some justified text: " lorem-ipsum " " lorem-ipsum)
@@ -23,19 +23,19 @@
      #:align 'center
      (happend
       (frame
-       (make-tblock
+       (lines->tblock
         #:align 'left
         '("This text is" "#:align 'left" "and" "`frame`d with" "#:style 'round"))
        #:style 'round)
       (frame
-       (make-tblock
+       (lines->tblock
         #:align 'right
         '("This text is" "#:align 'right" "and" "`frame`d with" "#:style 'double"
                          "and #:inset 2"))
        #:style 'double #:inset 2)
       #:align 'top)
      (frame
-      (make-tblock
+      (lines->tblock
        '("This text is" "#:align 'center" "and" "`frame`d with" "#:style 'single")
        #:align 'center))
      " "

@@ -20,7 +20,7 @@
     (define new-t
       (vappend #:align 'center
                       t1
-                      (make-tblock (make-string w #\─))
+                      (lines->tblock (make-string w #\─))
                       t2))
     (set-tblock-baseline! new-t (tblock-height t1))
     new-t))
@@ -119,7 +119,7 @@
 ;; https://en.wikipedia.org/wiki/Miscellaneous_Technical#Block
 (define $sum
   (make-operator
-   (make-tblock
+   (lines->tblock
     "\
 ▁▁▁
 ╲
@@ -129,7 +129,7 @@
 
 (define $product
   (make-operator
-   (make-tblock
+   (lines->tblock
     "\
 ▁▁▁▁
  ⎜⎟ 
@@ -139,7 +139,7 @@
 ;; Should the integral scale with the height of a given tblock?
 (define $integral
   (make-operator
-   (make-tblock
+   (lines->tblock
 "\
 ⎧
 ⎪
@@ -172,14 +172,14 @@
     #;(writeln t)
     (cond [(= 0 h) (->tblock "")]
           [(= 1 h) (->tblock str1)]
-          [(= 2 h) (make-tblock (string-join strs2 "\n") #:baseline b)]
+          [(= 2 h) (lines->tblock (string-join strs2 "\n") #:baseline b)]
           [(odd? h)
            (match strs-odd
              [(list top top-mid center bot-mid bottom)
               (define n-top-mid (min (- h 3)
                                      (max 0 (- b 1))))
               (define n-bot-mid (max 0 (- h n-top-mid 3)))
-              (make-tblock
+              (lines->tblock
                (string-join
                 (append (list top)
                         (make-list n-top-mid top-mid)
@@ -194,7 +194,7 @@
               (define n-top-mid (min (- h 3)
                                      (max 0 (- b 1))))
               (define n-bot-mid (- h n-top-mid 3))
-              (make-tblock
+              (lines->tblock
                (string-join
                 (append (list top)
                         (make-list n-top-mid top-mid)
@@ -205,7 +205,7 @@
                #:baseline b)]
              [(list top top-mid top-center bot-center bot-mid bottom)
               ; special treatment: two symbols are used at the center
-              (make-tblock
+              (lines->tblock
                (string-join
                 (append (list top)
                         (make-list (max 0 (- b 2)) top-mid)
@@ -324,7 +324,7 @@
       (for ([b (in-range n)])
         (define t
           ($ceiling (happend "3x + "
-                             ($left-brace (make-tblock (take lines n) #:baseline b))
+                             ($left-brace (lines->tblock (take lines n) #:baseline b))
                              " ")))
         (check-equal? (tblock-height t) n)
         (check-equal? (tblock-baseline t) b)

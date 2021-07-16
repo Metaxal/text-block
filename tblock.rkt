@@ -61,7 +61,7 @@
                 "  abcde   "))
 
 ;; align: (or/c 'left 'center 'right)
-(define (make-tblock lines
+(define (lines->tblock lines
                      #:align [align 'left]
                      #:pad-char [char #\space]
                      #:baseline [baseline 0])
@@ -87,8 +87,23 @@
 
 (define (->tblock t)
   (cond [(tblock? t) t]
-        [(string? t) (make-tblock t)]
-        [else (make-tblock (~a t))]))
+        [(string? t) (lines->tblock t)]
+        [else (lines->tblock (~a t))]))
+
+(define (make-tblock nrow ncol [char #\space])
+  (lines->tblock (make-list nrow (make-string ncol char))))
+
+(define (build-tblock nrow ncol proc)
+  (lines->tblock
+   (for/list ([r (in-range nrow)])
+     (apply string (for/list ([c (in-range ncol)])
+                     (proc r c))))))
+
+(module+ test
+  (check-equal?
+   (tblock-lines (build-tblock 2 26 (λ (row col) (integer->char (+ 65 col (* row 32))))))
+   '("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+     "abcdefghijklmnopqrstuvwxyz")))
 
 (define (valign-row t align)
   (let ([t (->tblock t)])
@@ -125,7 +140,7 @@
                 (make-list (max 0 (- hbottom (- (tblock-height t) r)))
                            (make-string (tblock-width t) char)))))
     (define lines (apply map string-append new-tlines))
-    (make-tblock lines #:baseline htop)))
+    (lines->tblock lines #:baseline htop)))
 
 (define (vappend #:align [align 'left]
                  #:pad-char [char #\space]
@@ -140,7 +155,7 @@
                       (tblock-height t))
                     (tblock-baseline t-bl))
                  0))
-    (make-tblock (append-map tblock-lines ts) #:align align #:pad-char char #:baseline bl)))
+    (lines->tblock (append-map tblock-lines ts) #:align align #:pad-char char #:baseline bl)))
 
 
 ;; strs: list of strings
@@ -175,7 +190,7 @@
   (let ([t1 (->tblock t1)] [t2 (->tblock t2)])
     (match-define (tblock w1 h1 b1 lines1) t1)
     (match-define (tblock w2 h2 b2 lines2) t2)
-    (define t (make-tblock (map string-copy lines1) #:baseline b1))
+    (define t (lines->tblock (map string-copy lines1) #:baseline b1))
     (place-at! t t2 rpos cpos)
     t))
 
@@ -283,7 +298,7 @@
                     (,cl ,cc ,cr)  ; ,cc used for inset
                     (,bl ,bc ,br))
       (map string->list (dict-ref styles style style)))
-    (make-tblock
+    (lines->tblock
      (append
       (list (string-append (string tl)
                            (make-string (+ w (* 2 inset)) tc)
@@ -315,7 +330,7 @@
     (frame
      (happend
       #:align 'center
-      (make-tblock (text->lines
+      (lines->tblock (text->lines
                     (string-append
                      "Here's some justified text: "
                      lorem-ipsum " " lorem-ipsum)
@@ -325,19 +340,19 @@
        #:align 'center
        (happend
         (frame
-         (make-tblock
+         (lines->tblock
           #:align 'left
           '("This text is" "#:align 'left" "and" "`frame`d with" "#:style 'round"))
          #:style 'round)
         (frame
-         (make-tblock
+         (lines->tblock
           #:align 'right
           '("This text is" "#:align 'right" "and" "`frame`d with" "#:style 'double"
                            "and #:inset 2"))
          #:style 'double #:inset 2)
         #:align 'top)
        (frame
-        (make-tblock
+        (lines->tblock
          '("This text is" "#:align 'center" "and" "`frame`d with" "#:style 'single")
          #:align 'center)))))
     (frame "YOU\nARE\nAWESOME")
