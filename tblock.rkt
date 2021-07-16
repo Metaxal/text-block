@@ -143,33 +143,121 @@
     (make-tblock (append-map tblock-lines ts) #:align align #:pad-char char #:baseline bl)))
 
 
+;; strs: list of strings
 ;; rpos: (or/c 'top 'center 'bottom number? (list/c 'ratio number?))
 ;; cops: (or/c 'left 'center 'right number? (list/c 'ratio number?))
-#;(define (superimpose t1 t2 rpos cpos)
+;; t2 is placed at (rpos cpos) relative to the top left corner of t1
+(define (place-at! t1 t2 rpos cpos)
+  (let ([t1 (->tblock t1)]
+        [t2 (->tblock t2)])
+    (match-define (tblock w1 h1 b1 lines1) t1)
+    (match-define (tblock w2 h2 b2 lines2) t2)
+    (let ([cpos (cond [(number? cpos) cpos]
+                      [(procedure? cpos) (cpos w1 w2)]
+                      [(eq? cpos 'left) 0]
+                      [(eq? cpos 'center) (quotient (- w1 w2) 2)]
+                      [(eq? cpos 'right) (- w1 w2)])]
+          [rpos (cond [(number? rpos) rpos]
+                      [(procedure? rpos) (rpos h1 h2)]
+                      [(eq? rpos 'top) 0]
+                      [(eq? rpos 'center) (quotient (- h1 h2) 2)]
+                      [(eq? rpos 'bottom) (- h1 h2)])])
+      (for ([line-dest (in-list (drop lines1 (max 0 (min h1 rpos))))]
+            [line-src  (in-list (drop lines2 (max 0 (min h2 (- rpos)))))]
+            [row (in-range h1)])
+        (string-copy! line-dest
+                      (min (max cpos 0) w1 #;(- w1 1))
+                      line-src
+                      (min (max (- cpos) 0) w2 #;(- w2 1))
+                      (max 0 (min w2 (- w1 cpos))))))))
+
+(define (superimpose t1 t2 rpos cpos #:pad-char [pad-char #\space])
   (let ([t1 (->tblock t1)] [t2 (->tblock t2)])
     (match-define (tblock w1 h1 b1 lines1) t1)
     (match-define (tblock w2 h2 b2 lines2) t2)
-    (define r
-      (match rpos
-        ['top 0]
-        ['center (quotient (/ (- h1 h2) 2))]
-        ['bottom (- h1 h2)]
-        [(list 'ratio (? number? ratio))
-         (exact-round (* ratio (* (- h1 h2) ratio)))]
-        [(? number?) rpos]))
-    (define c
-      (match cpos
-        ['left 0]
-        ['center (quotient (/ (- w1 w2) 2))]
-        ['right (- w1 w2)]
-        [(list 'ratio (? number? ratio))
-         (exact-round (* ratio (* (- h1 h2) ratio)))]
-        [(? number?) cpos]))
-    (define w3 ())
-    (define h3 ())
-    (define lines3
-      (for/list ([])))
-    ))
+    (define t (make-tblock (map string-copy lines1) #:baseline b1))
+    (place-at! t t2 rpos cpos)
+    t))
+
+(module+ test
+  (check-equal? (tblock-lines
+                 (superimpose (frame "You\nare\nawesome")
+                                 "YOU\nARE"
+                                 0 0))
+                '("YOU─────┐"
+                  "AREu    │"
+                  "│are    │"
+                  "│awesome│"
+                  "└───────┘"))
+  (check-equal? (tblock-lines
+                 (superimpose (frame "You\nare\nawesome")
+                                 "YOU\nARE"
+                                 0 -1))
+                '("OU──────┐"
+                  "REou    │"
+                  "│are    │"
+                  "│awesome│"
+                  "└───────┘"))
+  (check-equal? (tblock-lines
+                 (superimpose (frame "You\nare\nawesome")
+                                 "YOU\nARE"
+                                 -3 -3))
+                '("┌───────┐"
+                  "│You    │"
+                  "│are    │"
+                  "│awesome│"
+                  "└───────┘"))
+  (check-equal? (tblock-lines
+                 (superimpose (frame "You\nare\nawesome")
+                                 "YOU\nARE"
+                                 1 1))
+                '("┌───────┐"
+                  "│YOU    │"
+                  "│ARE    │"
+                  "│awesome│"
+                  "└───────┘"))
+  (check-equal? (tblock-lines
+                 (superimpose (frame "You\nare\nawesome")
+                                 "YOU\nARE"
+                                 4 7))
+                '("┌───────┐"
+                  "│You    │"
+                  "│are    │"
+                  "│awesome│"
+                  "└──────YO"))
+  (check-equal? (tblock-lines (superimpose (frame "You\nare\nawesome")
+                                           "YOU\nARE"
+                                           'bottom 'right))
+                '("┌───────┐"
+                  "│You    │"
+                  "│are    │"
+                  "│awesoYOU"
+                  "└─────ARE"))
+  (check-equal? (tblock-lines (superimpose (frame "You\nare\nawesome")
+                                           "YOU\nARE"
+                                           'top 'center))
+                '("┌──YOU──┐"
+                  "│YoARE  │"
+                  "│are    │"
+                  "│awesome│"
+                  "└───────┘"))
+  (check-equal? (tblock-lines (superimpose (frame "You\nare\nawesome")
+                                           "YOU\nARE"
+                                           'top 'right))
+                '("┌─────YOU"
+                  "│You  ARE"
+                  "│are    │"
+                  "│awesome│"
+                  "└───────┘"))
+  (check-equal? (tblock-lines (superimpose (frame "You\nare\nawesome")
+                                           "YOU\nARE"
+                                           'center 'center))
+                '("┌───────┐"
+                  "│YoYOU  │"
+                  "│arARE  │"
+                  "│awesome│"
+                  "└───────┘"))
+  )
 
 ;; The center element is used for the inset
 (define styles
@@ -223,34 +311,37 @@
   (define lorem-ipsum
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
   (displayln
-   (frame
-    (happend
-     #:align 'center
-     (make-tblock (text->lines
-                   (string-append
-                    "Here's some justified text: "
-                    lorem-ipsum " " lorem-ipsum)
-                   35
-                   #:align 'justified))
-     (vappend
+   (superimpose
+    (frame
+     (happend
       #:align 'center
-      (happend
+      (make-tblock (text->lines
+                    (string-append
+                     "Here's some justified text: "
+                     lorem-ipsum " " lorem-ipsum)
+                    35
+                    #:align 'justified))
+      (vappend
+       #:align 'center
+       (happend
+        (frame
+         (make-tblock
+          #:align 'left
+          '("This text is" "#:align 'left" "and" "`frame`d with" "#:style 'round"))
+         #:style 'round)
+        (frame
+         (make-tblock
+          #:align 'right
+          '("This text is" "#:align 'right" "and" "`frame`d with" "#:style 'double"
+                           "and #:inset 2"))
+         #:style 'double #:inset 2)
+        #:align 'top)
        (frame
         (make-tblock
-         #:align 'left
-         '("This text is" "#:align 'left" "and" "`frame`d with" "#:style 'round"))
-        #:style 'round)
-       (frame
-        (make-tblock
-         #:align 'right
-         '("This text is" "#:align 'right" "and" "`frame`d with" "#:style 'double"
-                          "and #:inset 2"))
-        #:style 'double #:inset 2)
-       #:align 'top)
-      (frame
-       (make-tblock
-        '("This text is" "#:align 'center" "and" "`frame`d with" "#:style 'single")
-        #:align 'center)))))))
+         '("This text is" "#:align 'center" "and" "`frame`d with" "#:style 'single")
+         #:align 'center)))))
+    (frame "YOU\nARE\nAWESOME")
+    48 14)))
 
 (define (overline t)
   (let ([t (->tblock t)])

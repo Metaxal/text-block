@@ -1,18 +1,17 @@
 #lang scribble/manual
 
-@(require (for-label text-block)
+@(require (for-label text-block racket/list racket/math)
           "example.rkt")
 
-@(define the-eval (make-eval 'text-block))
+@(define the-eval (make-eval 'text-block 'racket/list 'racket/math))
 
 @title{Text block combiners and basic operations}
 
 @;defmodule[text-block]
 
-@defproc[(happend
-          [#:align align (or/c 'top 'center 'bottom 'baseline) 'baseline]
-          [#:pad-char pad-char char? #\space]
-          [t tblock/any] ...)
+@defproc[(happend [#:align align (or/c 'top 'center 'bottom 'baseline) 'baseline]
+                  [#:pad-char pad-char char? #\space]
+                  [t tblock/any] ...)
          tblock?]{
 Appends the tblocks @racketid[t] horizontally.}
 
@@ -20,20 +19,58 @@ Appends the tblocks @racketid[t] horizontally.}
 
 
 @defproc[(vappend [#:align align (one-of/c 'left 'center 'right) 'left]
-                         [#:pad-char char? pad-char #\space]
-                         [#:baseline-of t-bl (or/c #f tblock?) #f]
-                         [t tblock/any] ...)
+                  [#:pad-char char? pad-char #\space]
+                  [#:baseline-of t-bl (or/c #f tblock?) #f]
+                  [t tblock/any] ...)
          tblock?]{
 Appends the tblocks @racketid[t] vertically.
 
 If @racketid[t-bl] is not @racket[#f] and @racket[t-bl] is a member of @racket[t ...]
 (according to @racket[eq?]), then the baseline of the returned tblock is on the same line
-as the baseline of @racketid[t-bl].}
+as the baseline of @racketid[t-bl].
 
 @display-example[the-eval (displayln (vappend "Twinkle, twinkle,"
                                          "Little star,"
                                          "How I wonder what you are!"
                                          #:align 'center))]
+}
+
+@defproc[(superimpose [t1 tblock/any]
+                      [t2 block/any]
+                      [rpos (or/c exact-integer?
+                                  (-> exact-nonnegative-integer?
+                                      exact-nonnegative-integer?
+                                      exact-integer?)
+                                  'top
+                                  'center
+                                  'bottom)]
+                      [cpos (or/c exact-integer?
+                                  (-> exact-nonnegative-integer?
+                                      exact-nonnegative-integer?
+                                      exact-integer?)
+                                  'left
+                                  'center
+                                  'right)])
+         tblock?]{
+ Returns a new tblock where @racketid[t2] is superimposed over @racketid[t1].
+ The position @racketid[rpos] can either be
+ a number relative to the top left of @racketid[t1],
+ a procedure that takes the widths of both @racket[t1] and @racket[t2]
+ and returns a number relative to the top left of @racketid[t1],
+ or a symbolic value---and similarly for @racketid[cpos].
+
+ @display-example[the-eval
+                  (displayln (superimpose "........\n........\n........\n........\n"
+                                          "AB\nCD"
+                                          'bottom 'right))
+                  (displayln (superimpose "........\n........\n........\n........\n"
+                                          "AB\nCD"
+                                          1 'left))
+                  (displayln (superimpose (make-tblock (make-list 10 (make-string 20 #\.)))
+                                          "AB\nCD"
+                                          'center
+                                          (λ (w1 w2) (exact-truncate (* 3/4 (- w1 w2))))))]
+}
 
 @defthing[frame-style/c contract?]{
  A contract for @racket[frame] styles.
