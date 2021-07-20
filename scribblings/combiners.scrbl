@@ -1,13 +1,11 @@
 #lang scribble/manual
 
-@(require (for-label text-block racket/list racket/math)
+@(require (for-label text-block racket/base racket/list racket/math)
           "example.rkt")
 
 @(define the-eval (make-eval 'text-block 'racket/list 'racket/math))
 
 @title{Text block combiners and basic operations}
-
-@;defmodule[text-block]
 
 @defproc[(make-tblock [nrow exact-nonnegative-integer?]
                       [ncol exact-nonnegative-integer?]
@@ -30,7 +28,8 @@ Returns a new tblock with @racketid[nrow] rows and @racketid[ncol] columns
 
  @display-example[the-eval
                   (displayln
-                   (build-tblock 2 26 (λ (row col) (integer->char (+ 65 col (* row 32))))))]
+                   (build-tblock 2 26 (λ (row col) (integer->char
+                                                    (+ 65 col (* row 32))))))]
 }
 
 @defproc[(happend [#:align align (or/c 'top 'center 'bottom 'baseline) 'baseline]
@@ -39,7 +38,12 @@ Returns a new tblock with @racketid[nrow] rows and @racketid[ncol] columns
          tblock?]{
 Appends the tblocks @racketid[t] horizontally.}
 
-@display-example[the-eval (displayln (happend "A\nA" " " "B\nB\nB\nB" ":\n:" "C\nC" #:align 'center))]
+@display-example[the-eval (displayln (happend "A\nA"
+                                              " "
+                                              "B\nB\nB\nB"
+                                              ":\n:"
+                                              "C\nC"
+                                              #:align 'center))]
 
 
 @defproc[(vappend [#:align align (one-of/c 'left 'center 'right) 'left]
@@ -53,10 +57,10 @@ If @racketid[t-bl] is not @racket[#f] and @racket[t-bl] is a member of @racket[t
 (according to @racket[eq?]), then the baseline of the returned tblock is on the same line
 as the baseline of @racketid[t-bl].
 
-@display-example[the-eval (displayln (vappend "Twinkle, twinkle,"
-                                         "Little star,"
-                                         "How I wonder what you are!"
-                                         #:align 'center))]
+ @display-example[the-eval (displayln (vappend "Twinkle, twinkle,"
+                                               "Little star,"
+                                               "How I wonder what you are!"
+                                               #:align 'center))]
 }
 
 @defproc[(superimpose [t1 tblock/any]
