@@ -19,6 +19,7 @@
   [text->lines (->* [string? exact-positive-integer?]
                     [#:align (one-of/c 'none 'left 'center 'right 'justified)]
                     any)]
+  [string-reverse (-> string? string?)]
   ))
 
 (define (make-list-of-k-sum-to-n k n)
@@ -145,3 +146,5 @@
       (when (> (n-words s) 1)
         (check-equal? (string-length s) ncol)))))
 
+(define (string-reverse s)
+  (apply string (reverse (string->list s))))

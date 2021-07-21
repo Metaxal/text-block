@@ -7,6 +7,16 @@
 @defmodule[text-block/text]
 
 @(define the-eval (make-base-eval))
+@examples[#:eval the-eval #:hidden
+          (require racket/string
+                   text-block)]
+
+@defproc[(string-reverse [str string?]) string?]{
+ Returns the reverse string of @racketid[str].
+                               
+ @examples[#:eval the-eval
+           (string-reverse "hello")]
+}
 
 @defproc[(text->lines [text string?]
                       [ncol exact-integer?]
@@ -14,10 +24,6 @@
          (listof string?)]{
 Splits the given string and justifies it to the specified number of columns.
 }
-
-@examples[#:eval the-eval #:hidden
-          (require racket/string
-                   text-block)]
 
 @(examples
   #:eval the-eval
