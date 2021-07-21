@@ -1,5 +1,9 @@
 #lang scribble/manual
 
+@;; to remove the red links, try
+@;; $ scribble +m --htmls --dest htmls --redirect-main http://docs.racket-lang.org main.scrbl && xdg-open htmls/main/index.html
+
+
 @(require (for-label text-block racket/base racket/list racket/math)
           "example.rkt")
 
@@ -131,5 +135,15 @@ as the baseline of @racketid[t-bl].
 Draws a line above or below the text.
 
 @display-example[the-eval (displayln (happend (overline "hello") " " (underline 'there) "!"))]
+}
+
+
+@defproc*[([(hflip [t tblock/any]) tblock?]
+           [(vflip [t tblock/any]) tblock?])]{
+ Returns a new tblock like @racketid[t], flipped either horizontally or vertically.
+
+ @display-example[the-eval
+                  (displayln (vflip "ab\nAB"))
+                  (displayln (hflip "ab\nAB"))]
 }
 

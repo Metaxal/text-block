@@ -1,6 +1,7 @@
 #lang racket
 (require define2
-         racket/contract)
+         racket/contract
+         "text.rkt")
 
 ;;; Text blocks that can be combined like pictures.
 ;;; Any append operation creates a new rectangular block.
@@ -91,7 +92,7 @@
         [else (lines->tblock (~a t))]))
 
 (define (make-tblock nrow ncol [char #\space])
-  (lines->tblock (make-list nrow (make-string ncol char))))
+  (lines->tblock (build-list nrow (λ _ (make-string ncol char)))))
 
 (define (build-tblock nrow ncol proc)
   (lines->tblock
@@ -162,7 +163,7 @@
 ;; rpos: (or/c 'top 'center 'bottom number? (list/c 'ratio number?))
 ;; cops: (or/c 'left 'center 'right number? (list/c 'ratio number?))
 ;; t2 is placed at (rpos cpos) relative to the top left corner of t1
-(define (place-at! t1 t2 rpos cpos)
+(define (superimpose! t1 t2 rpos cpos)
   (let ([t1 (->tblock t1)]
         [t2 (->tblock t2)])
     (match-define (tblock w1 h1 b1 lines1) t1)
@@ -191,7 +192,7 @@
     (match-define (tblock w1 h1 b1 lines1) t1)
     (match-define (tblock w2 h2 b2 lines2) t2)
     (define t (lines->tblock (map string-copy lines1) #:baseline b1))
-    (place-at! t t2 rpos cpos)
+    (superimpose! t t2 rpos cpos)
     t))
 
 (module+ test
@@ -369,3 +370,18 @@
     (vappend t
              (make-string (tblock-width t) #;#\─ #\‾)
              #:baseline-of t)))
+
+(define (vflip t)
+  (let ([t (->tblock t)])
+    (lines->tblock (reverse (tblock-lines t)) #:baseline (tblock-baseline t))))
+
+(define (hflip t)
+  (let ([t (->tblock t)])
+    (lines->tblock (map string-reverse (tblock-lines t)) #:baseline (tblock-baseline t))))
+
+(module+ test
+  (check-equal? (tblock-lines (vflip "ab\nAB"))
+                '("AB" "ab"))
+  (check-equal? (tblock-lines (hflip "ab\nAB"))
+                '("ba" "BA")))
+
