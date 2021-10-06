@@ -52,14 +52,20 @@ Appends the tblocks @racketid[t] horizontally.}
 
 @defproc[(vappend [#:align align (one-of/c 'left 'center 'right) 'left]
                   [#:pad-char char? pad-char #\space]
-                  [#:baseline-of t-bl (or/c #f tblock?) #f]
+                  [#:baseline-of t-bl
+                   (or/c exact-nonnegative-integer?
+                         'first 'second 'last
+                         (list exact-nonnegative-integer?)
+                         tblock?)
+                   'first]
                   [t tblock/any] ...)
          tblock?]{
 Appends the tblocks @racketid[t] vertically.
 
-If @racketid[t-bl] is not @racket[#f] and @racket[t-bl] is a member of @racket[t ...]
-(according to @racket[eq?]), then the baseline of the returned tblock is on the same line
-as the baseline of @racketid[t-bl].
+If @racketid[t-bl] is a number, it is used as the corresponding row of the resulting tblock.
+If @racketid[t-bl] is one of the symbols, or @racket[tblock?] (member of @racketid[ts]),
+or a number in parenthesis (considered as an index in @racketid[ts]),
+ then the baseline of the corresponding element in @racketid[ts] is used as the new baseline.
 
  @display-example[the-eval (displayln (vappend "Twinkle, twinkle,"
                                                "Little star,"

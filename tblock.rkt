@@ -145,17 +145,25 @@
 
 (define (vappend #:align [align 'left]
                  #:pad-char [char #\space]
-                 #:baseline-of [t-bl #f]
+                 #:baseline-of [t-bl 'first]
                  . ts)
   (let ([ts (map ->tblock ts)])
+    (set! t-bl
+          (match t-bl
+            [(? tblock?) t-bl]
+            ['first (first ts)]
+            ['second (second ts)]
+            ['last (last ts)]
+            [(? exact-nonnegative-integer?) t-bl]
+            [(list (? exact-nonnegative-integer?)) (list-ref ts t-bl)]))
     (when (and t-bl (not (memq t-bl ts)))
       (error "tblock-append: Cannot find baseline text-block in given list of text blocks"))
-    (define bl (if t-bl
+    (define bl (if (tblock? t-bl)
                  (+ (for/sum ([t (in-list ts)]
                               #:break (eq? t t-bl))
                       (tblock-height t))
                     (tblock-baseline t-bl))
-                 0))
+                 t-bl)) ; number
     (lines->tblock (append-map tblock-lines ts) #:align align #:pad-char char #:baseline bl)))
 
 
