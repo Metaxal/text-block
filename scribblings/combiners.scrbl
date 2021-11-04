@@ -57,7 +57,7 @@ Appends the tblocks @racketid[t] horizontally.}
                          'first 'second 'last
                          (list exact-nonnegative-integer?)
                          tblock?)
-                   'first]
+                   (if (empty? ts) 0 'first)]
                   [t tblock/any] ...)
          tblock?]{
 Appends the tblocks @racketid[t] vertically.

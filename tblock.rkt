@@ -145,7 +145,7 @@
 
 (define (vappend #:align [align 'left]
                  #:pad-char [char #\space]
-                 #:baseline-of [t-bl 'first]
+                 #:baseline-of [t-bl (if (empty? ts) 0 'first)]
                  . ts)
   (let ([ts (map ->tblock ts)])
     (set! t-bl
