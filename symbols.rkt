@@ -522,7 +522,7 @@
           ["longrightarrow"    . "⟶"]
           ["Updownarrow"       . "⇕"]
           ["leadsto"           . "↝"]
-          ["aleph"             . "א"]
+          ["aleph"             . "ℵ"]
           ["sharp"             . "♯"]
           ["flat"              . "♭"]
           ["natural"           . "♮"]
