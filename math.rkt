@@ -308,7 +308,14 @@
      (/ . ,$/)
      (expt . ,$expt)
      (sqrt . ,$sqrt)
-     (sqr . ,$sqr))))
+     (sqr . ,$sqr)
+     (floor . ,$floor) (left-floor . ,$left-floor) (right-floor . ,$right-floor)
+     (ceiling . ,$ceiling) (left-ceiling . ,$left-ceiling) (right-ceiling . ,$right-ceiling)
+     (brace . ,$brace) (left-brace . ,$left-brace) (right-brace . ,$right-brace)
+     (paren . ,$paren) (left-paren . ,$left-paren) (right-paren . ,$right-paren)
+     (square-bracket . ,$square-bracket) (left-square-bracket . ,$left-square-bracket) (right-square-bracket . ,$right-square-bracket)
+     (underbrace . ,$underbrace)
+     )))
 
 
 (module+ test
@@ -329,4 +336,10 @@
         (check-equal? (tblock-height t) n)
         (check-equal? (tblock-baseline t) b)
         #;(displayln t))))
+  (check-equal?
+   ($formula '(floor (log (/ t_max t_0))))
+   (tblock 12 3 1
+           '("⎢   ⎛t_max⎞⎥"
+             "⎢log⎜─────⎟⎥"
+             "⎣   ⎝ t_0 ⎠⎦")))
   )
