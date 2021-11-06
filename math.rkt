@@ -298,24 +298,24 @@
           [else
            t])))
 
-(define ($formula tree)
-  (tree-apply
-   tree
-   `((+ . ,$+)
-     (- . ,$-)
-     (* . ,$*)
-     (^ . ,$expt)
-     (/ . ,$/)
-     (expt . ,$expt)
-     (sqrt . ,$sqrt)
-     (sqr . ,$sqr)
-     (floor . ,$floor) (left-floor . ,$left-floor) (right-floor . ,$right-floor)
-     (ceiling . ,$ceiling) (left-ceiling . ,$left-ceiling) (right-ceiling . ,$right-ceiling)
-     (brace . ,$brace) (left-brace . ,$left-brace) (right-brace . ,$right-brace)
-     (paren . ,$paren) (left-paren . ,$left-paren) (right-paren . ,$right-paren)
-     (square-bracket . ,$square-bracket) (left-square-bracket . ,$left-square-bracket) (right-square-bracket . ,$right-square-bracket)
-     (underbrace . ,$underbrace)
-     )))
+(define formula-dict
+  `((+ . ,$+)
+    (- . ,$-)
+    (* . ,$*)
+    (^ . ,$expt)
+    (/ . ,$/)
+    (expt . ,$expt)
+    (sqrt . ,$sqrt)
+    (sqr . ,$sqr)
+    (floor . ,$floor) (left-floor . ,$left-floor) (right-floor . ,$right-floor)
+    (ceiling . ,$ceiling) (left-ceiling . ,$left-ceiling) (right-ceiling . ,$right-ceiling)
+    (brace . ,$brace) (left-brace . ,$left-brace) (right-brace . ,$right-brace)
+    (paren . ,$paren) (left-paren . ,$left-paren) (right-paren . ,$right-paren)
+    (square-bracket . ,$square-bracket) (left-square-bracket . ,$left-square-bracket) (right-square-bracket . ,$right-square-bracket)
+    (underbrace . ,$underbrace)))
+
+(define ($formula tree [formula-dict formula-dict])
+  (tree-apply tree formula-dict))
 
 
 (module+ test
