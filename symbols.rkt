@@ -611,7 +611,10 @@
 (provide (prefix-out @ (all-from-out (submod "." unprefixed))))
 
 
-#;;; This is commented out to avoid creating a dependency on mrlib/tex-table
+;; This is commented out to avoid creating a dependency on mrlib/tex-table
+;; The aleph in DrRacket is weird: when displayed in the search-list-box of
+;; the string2unicode quickscript, it displays the text in reverse
+#;
 (module+ drracket
   (require mrlib/tex-table
            racket

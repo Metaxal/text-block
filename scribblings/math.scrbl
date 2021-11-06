@@ -107,9 +107,12 @@ or encloses them with both brackets.
            ($underbrace " C'est un message. " "…ayant soif")))]
 }
 
-@defproc[($formula [tree any/c]) tblock?]{
+@defproc[($formula [tree any/c] [formula-dict dict?]) tblock?]{
 Formats the given racket quoted math expression @racketid[tree] as a @racket[tblock].
 }
+
+@defidform[formula-dict]{
+The default dictionary used by @racket[$formula].}
 
 Examples:
 @(display-example
