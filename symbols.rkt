@@ -582,6 +582,7 @@
           ["leftmultimap"      . "⟜"]
           ["multimapinv"       . "⟜"]
           ["leftlollipop"      . "⟜"]
+          ["yinyang"           . "☯"]
           )))
 
 (module unprefixed racket/base
