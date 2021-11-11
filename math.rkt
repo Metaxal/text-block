@@ -299,20 +299,29 @@
            t])))
 
 (define formula-dict
-  `((+ . ,$+)
+  `((list . ,happend)
+    (+ . ,$+)
     (- . ,$-)
     (* . ,$*)
-    (^ . ,$expt)
     (/ . ,$/)
+    (^ . ,$^)
+    (_ . ,$_)
+    (_^ . ,$_^)
+    (^_ . ,$^_)
     (expt . ,$expt)
     (sqrt . ,$sqrt)
-    (sqr . ,$sqr)
+    (sqr  . ,$sqr)
+    (cube . ,$cube)
+    (sum . ,$sum)
+    (integral . ,$integral)
+    (product . ,$product)
     (floor . ,$floor) (left-floor . ,$left-floor) (right-floor . ,$right-floor)
     (ceiling . ,$ceiling) (left-ceiling . ,$left-ceiling) (right-ceiling . ,$right-ceiling)
     (brace . ,$brace) (left-brace . ,$left-brace) (right-brace . ,$right-brace)
     (paren . ,$paren) (left-paren . ,$left-paren) (right-paren . ,$right-paren)
     (square-bracket . ,$square-bracket) (left-square-bracket . ,$left-square-bracket) (right-square-bracket . ,$right-square-bracket)
-    (underbrace . ,$underbrace)))
+    (underbrace . ,$underbrace)
+    (overbrace . ,$overbrace)))
 
 (define ($formula tree [formula-dict formula-dict])
   (tree-apply tree formula-dict))
@@ -342,4 +351,22 @@
            '("⎢   ⎛t_max⎞⎥"
              "⎢log⎜─────⎟⎥"
              "⎣   ⎝ t_0 ⎠⎦")))
+  (check-equal?
+   ($formula '(floor (log (/ (^_ T k max) (_ T 0)))))
+   (tblock 11 6 3 '("⎢   ⎛ k  ⎞⎥"
+                    "⎢   ⎜T   ⎟⎥"
+                    "⎢   ⎜ max⎟⎥"
+                    "⎢log⎜────⎟⎥"
+                    "⎢   ⎜ T  ⎟⎥"
+                    "⎣   ⎝  0 ⎠⎦")))
+
+  (check-equal?
+   ($formula '(list (sum "k=1" "K") (floor (log (/ (^_ T k max) (_ T 0))))))
+   (tblock 15 6 3 '(" K  ⎢   ⎛ k  ⎞⎥"
+                    "▁▁▁ ⎢   ⎜T   ⎟⎥"
+                    "╲   ⎢   ⎜ max⎟⎥"
+                    "╱   ⎢log⎜────⎟⎥"
+                    "▔▔▔ ⎢   ⎜ T  ⎟⎥"
+                    "k=1 ⎣   ⎝  0 ⎠⎦")))
+
   )
