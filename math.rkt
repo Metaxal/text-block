@@ -304,7 +304,7 @@
     (- . ,$-)
     (* . ,$*)
     (/ . ,$/)
-    (^ . ,$^)
+    (^ . ,$expt) ; MUST be treated as exponent, to avoid (a+b)^2 being written as a+b^2
     (_ . ,$_)
     (_^ . ,$_^)
     (^_ . ,$^_)
@@ -368,5 +368,14 @@
                     "╱   ⎢log⎜────⎟⎥"
                     "▔▔▔ ⎢   ⎜ T  ⎟⎥"
                     "k=1 ⎣   ⎝  0 ⎠⎦")))
+
+  (check-equal?
+   ($formula '(^ (+ a b) 2))
+   (tblock 8 2 1 '("       2"
+                   "(a + b) ")))
+  (check-equal?
+   ($formula '(^ (+ a b) c))
+   (tblock 8 2 1 '("       c"
+                   "(a + b) ")))
 
   )
