@@ -7,3 +7,5 @@
 (define pkg-desc "Combine unicode 2d text blocks, display unicode math formula")
 (define version "0.0")
 (define pkg-authors '(lorseau))
+
+(define compile-omit-paths '("wip"))

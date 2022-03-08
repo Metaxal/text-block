@@ -293,10 +293,13 @@
                "╰─╯")]
     [double . ("╔═╗"
                "║ ║"
-               "╚═╝")]))
+               "╚═╝")]
+    [heavy  . ("┏━┓"
+               "┃ ┃"
+               "┗━┛")]))
 
 (define frame-style/c
-  (or/c (one-of/c 'single 'round 'double)
+  (or/c (apply one-of/c (map car styles))
         (list/c string? string? string?)))
 
 ;; style: (one-of 'single 'round 'double frame-style/c)
