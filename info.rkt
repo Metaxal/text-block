@@ -6,6 +6,7 @@
 (define scribblings '(("scribblings/main.scrbl" (multi-page) ("Text block") "text-block")))
 (define pkg-desc "Combine unicode 2d text blocks, display unicode math formula")
 (define version "0.0")
-(define pkg-authors '(lorseau))
+(define pkg-authors '(laurent.orseau@gmail.com))
 
 (define compile-omit-paths '("wip"))
+(define license '(Apache-2.0 OR MIT))

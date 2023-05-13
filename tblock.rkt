@@ -62,9 +62,9 @@
 
 ;; align: (or/c 'left 'center 'right)
 (define (lines->tblock lines
-                     #:align [align 'left]
+                     #:? [align 'left]
                      #:pad-char [char #\space]
-                     #:baseline [baseline 0])
+                     #:? [baseline 0])
   (when (string? lines)
     (set! lines (string-split lines "\n" #:trim? #f)))
   (unless (andmap string? lines)
@@ -114,7 +114,7 @@
       [(center) (quotient (tblock-height t) 2)])))
 
 ;; align : (or/c 'top 'baseline 'bottom)
-(define (happend #:align [align 'baseline] #:pad-char [char #\space]
+(define (happend #:? [align 'baseline] #:pad-char [char #\space]
                         . ts)
   (let ([ts (map ->tblock ts)])
     (define-values (htop hbottom)
@@ -142,7 +142,7 @@
     (define lines (apply map string-append new-tlines))
     (lines->tblock lines #:baseline htop)))
 
-(define (vappend #:align [align 'left]
+(define (vappend #:? [align 'left]
                  #:pad-char [char #\space]
                  #:baseline-of [t-bl (if (empty? ts) 0 'first)]
                  . ts)
@@ -194,7 +194,7 @@
                       (min (max (- cpos) 0) w2 #;(- w2 1))
                       (max 0 (min w2 (- w1 cpos))))))))
 
-(define (superimpose t1 t2 rpos cpos #:pad-char [pad-char #\space])
+(define (superimpose t1 t2 rpos cpos #:? [pad-char #\space])
   (let ([t1 (->tblock t1)] [t2 (->tblock t2)])
     (match-define (tblock w1 h1 b1 lines1) t1)
     (match-define (tblock w2 h2 b2 lines2) t2)
@@ -301,7 +301,7 @@
   (or/c (apply one-of/c (map car styles))
         (list/c string? string? string?)))
 
-(define (frame t #:style [style 'single] #:inset [inset 0])
+(define (frame t #:? [style 'single] #:? [inset 0])
   (let ([t (->tblock t)])
     (match-define (tblock w h baseline lines) t)
     (match-define `((,tl ,tc ,tr)
@@ -380,13 +380,13 @@
                      style))]))
   (make-string (tblock-width t) ch))
 
-(define (overline t #:style [style 'single])
+(define (overline t #:? [style 'single])
   (let ([t (->tblock t)])
     (vappend (make-line-like t style)
              t
              #:baseline-of t)))
 
-(define (underline t #:style [style 'single])
+(define (underline t #:? [style 'single])
   (let ([t (->tblock t)])
     (vappend t
              (make-line-like t style)
