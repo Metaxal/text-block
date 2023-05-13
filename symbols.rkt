@@ -583,6 +583,92 @@
           ["multimapinv"       . "⟜"]
           ["leftlollipop"      . "⟜"]
           ["yinyang"           . "☯"]
+
+          ;; Emoticons / emojis / smileys
+          ["grin"        . "\U1F601"] ;	😁	grinning face with smiling eyes
+          ["joy"         . "\U1F602"] ;	😂	face with tears of joy
+          ["sweat_smile" . "\U1F605"] ;	😅	smiling face with open mouth and cold sweat
+          ["wink"        . "\U1F609"] ;	😉	winking face
+          ["sob"         . "\U1F62D"] ;	😭	loudly crying face
+          ["cry"         . "\U1F622"] ;	😢	crying face
+          ["relief"      . "\U1F60C"] ;	😌	relieved face
+          ["scream"      . "\U1F631"] ;	😱	face screaming in fear
+          )
+          ;; Emoticons / emojis / smileys
+          #;'(
+          ["" . "\U1F600"] ;	😀	grinning face
+          ["" . "\U1F603"] ;	😃	smiling face with open mouth (c.f. ☺)
+          ["" . "\U1F604"] ;	😄	smiling face with open mouth and smiling eyes
+          ["" . "\U1F606"] ;	😆	smiling face with open mouth and tightly-closed eyes
+          ["" . "\U1F607"] ;	😇	smiling face with halo
+          ["" . "\U1F608"] ;	😈	smiling face with horns (c.f. 👿 "imp")
+          ["" . "\U1F60A"] ;	😊	smiling face with smiling eyes
+          ["" . "\U1F60B"] ;	😋	face savouring delicious food
+          ["" . "\U1F60D"] ;	😍	smiling face with heart-shaped eyes
+          ["" . "\U1F60E"] ;	😎	smiling face with sunglasses
+          ["" . "\U1F60F"] ;	😏	smirking face
+          ["" . "\U1F610"] ;	😐	neutral face (also used for "west wind" 西 in some Mahjong annotation)
+          ["" . "\U1F611"] ;	😑	expressionless face
+          ["" . "\U1F612"] ;	😒	unamused face
+          ["" . "\U1F613"] ;	😓	face with cold sweat
+          ["" . "\U1F614"] ;	😔	pensive face
+          ["" . "\U1F615"] ;	😕	confused face
+          ["" . "\U1F616"] ;	😖	confounded face
+          ["" . "\U1F617"] ;	😗	kissing face
+          ["" . "\U1F618"] ;	😘	face throwing a kiss
+          ["" . "\U1F619"] ;	😙	kissing face with smiling eyes
+          ["" . "\U1F61A"] ;	😚	kissing face with closed eyes
+          ["" . "\U1F61B"] ;	😛	face with stuck-out tongue
+          ["" . "\U1F61C"] ;	😜	face with stuck-out tongue and winking eye
+          ["" . "\U1F61D"] ;	😝	face with stuck-out tongue and tightly-closed eyes
+          ["" . "\U1F61E"] ;	😞	disappointed face
+          ["" . "\U1F61F"] ;	😟	worried face
+          ["" . "\U1F620"] ;	😠	angry face
+          ["" . "\U1F621"] ;	😡	pouting face
+          ["" . "\U1F623"] ;	😣	persevering face
+          ["" . "\U1F624"] ;	😤	Unicode: face with look of triumph, Apple: huffing with anger face
+          ["" . "\U1F625"] ;	😥	disappointed but relieved face
+          ["" . "\U1F626"] ;	😦	frowning face with open mouth
+          ["" . "\U1F627"] ;	😧	anguished face
+          ["" . "\U1F628"] ;	😨	fearful face
+          ["" . "\U1F629"] ;	😩	weary face
+          ["" . "\U1F62A"] ;	😪	sleepy face
+          ["" . "\U1F62B"] ;	😫	tired face
+          ["" . "\U1F62C"] ;	😬	grimacing face
+          ["" . "\U1F62E"] ;	😮	face with open mouth
+          ["" . "\U1F62F"] ;	😯	hushed face
+          ["" . "\U1F630"] ;	😰	face with open mouth and cold sweat
+          ["" . "\U1F632"] ;	😲	astonished face
+          ["" . "\U1F633"] ;	😳	flushed face
+          ["" . "\U1F634"] ;	😴	sleeping face
+          ["" . "\U1F635"] ;	😵	dizzy face
+          ["" . "\U1F636"] ;	😶	face without mouth (c.f. ⚇ "white circle with two dots")
+          ["" . "\U1F637"] ;	😷	face with medical mask
+          ["" . "\U1F638"] ;	😸	grinning cat face with smiling eyes
+          ["" . "\U1F639"] ;	😹	cat face with tears of joy
+          ["" . "\U1F63A"] ;	😺	smiling cat face with open mouth
+          ["" . "\U1F63B"] ;	😻	smiling cat face with heart-shape eyes
+          ["" . "\U1F63C"] ;	😼	cat face with wry smile
+          ["" . "\U1F63D"] ;	😽	kissing cat face with closed eyes
+          ["" . "\U1F63E"] ;	😾	pouting cat face
+          ["" . "\U1F63F"] ;	😿	crying cat face
+          ["" . "\U1F640"] ;	🙀	weary cat face
+          ["" . "\U1F641"] ;	🙁	slightly frowning face
+          ["" . "\U1F642"] ;	🙂	slightly smiling face
+          ["" . "\U1F643"] ;	🙃	upside-down face
+          ["" . "\U1F644"] ;	🙄	face with rolling eyes
+          ["" . "\U1F645"] ;	🙅	face with "no good" gesture, with lower arms crossed, derived from the japanese gesture for "no". Intended as gender-neutral but represented as a woman on most platforms.
+          ["" . "\U1F646"] ;	🙆	face with "ok" gesture, described as a person with arms raised above the head forming a "circle", interpreted as "OK sign" (derived from the japanese gesture for "OK"). Intended as gender-neutral but represented as a woman on most platforms.
+          ["" . "\U1F647"] ;	🙇	person bowing (dogeza), depicted as a man on most platforms.
+          ["" . "\U1F648"] ;	🙈	see-no-evil monkey
+          ["" . "\U1F649"] ;	🙉	hear-no-evil monkey
+          ["" . "\U1F64A"] ;	🙊	speak-no-evil monkey
+          ["" . "\U1F64B"] ;	🙋	happy person raising one hand, a person raising one hand as if to answer a question, intended as gender-neutral but represented as a woman on most platforms.
+          ["" . "\U1F64C"] ;	🙌	person raising both hands in celebration, on many platforms depicted as just the raised hands (Apple name: "Hands Raised in Celebration").
+          ["" . "\U1F64D"] ;	🙍	person frowning
+          ["" . "\U1F64E"] ;	🙎	person with pouting face
+          ["" . "\U1F64F"] ;	🙏	person with folded hands (to indicate variously sorrow, regret, pleading, praying, bowing, thanking). In most platforms depicted as just the hand, pressed together but not folded (Apple name: "Hands Pressed Together").
+          
           )))
 
 (module unprefixed racket/base

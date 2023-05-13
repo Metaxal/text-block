@@ -7,9 +7,8 @@
 ;;; Any append operation creates a new rectangular block.
 
 (provide (struct-out tblock)
-         (contract-out
-          )
-         (all-defined-out))
+         (except-out (all-defined-out)
+                     make-line-like))
 
 (define tblock/any any/c)
 
@@ -302,7 +301,6 @@
   (or/c (apply one-of/c (map car styles))
         (list/c string? string? string?)))
 
-;; style: (one-of 'single 'round 'double frame-style/c)
 (define (frame t #:style [style 'single] #:inset [inset 0])
   (let ([t (->tblock t)])
     (match-define (tblock w h baseline lines) t)
@@ -370,17 +368,37 @@
     (frame "YOU\nARE\nAWESOME")
     48 14)))
 
-(define (overline t)
+(define (make-line-like t style)
+  (define ch
+    (case style
+      [(single) #\─]
+      [(double) #\═]
+      [(heavy) #\━]
+      [else (if (char? style)
+              style
+              (error "invalid style: expected (or/c 'single 'double 'heavy char?), given "
+                     style))]))
+  (make-string (tblock-width t) ch))
+
+(define (overline t #:style [style 'single])
   (let ([t (->tblock t)])
-    (vappend (make-string (tblock-width t) #;#\─ #\_)
+    (vappend (make-line-like t style)
              t
              #:baseline-of t)))
 
-(define (underline t)
+(define (underline t #:style [style 'single])
   (let ([t (->tblock t)])
     (vappend t
-             (make-string (tblock-width t) #;#\─ #\‾)
+             (make-line-like t style)
              #:baseline-of t)))
+
+(module+ test
+  (check-equal? (tblock->string (underline "abc"))
+                "abc\n───")
+  (check-equal? (tblock->string (underline ""))
+                "")
+  (check-equal? (tblock->string (overline "abc" #:style 'heavy))
+                "━━━\nabc"))
 
 (define (vflip t)
   (let ([t (->tblock t)])

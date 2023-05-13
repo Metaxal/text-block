@@ -112,7 +112,7 @@ or a number in parenthesis (considered as an index in @racketid[ts]),
 
 @defthing[frame-style/c contract?]{
  A contract for @racket[frame] styles.
- Matches @racket[(or/c (one-of/c 'single 'round 'double)
+ Matches @racket[(or/c (one-of/c 'single 'round 'double 'heavy)
                        (list/c string? string? string?))]
  where the list of strings is for defining custom styles.
 }
@@ -136,11 +136,16 @@ or a number in parenthesis (considered as an index in @racketid[ts]),
                                               "{~}")))]
 }
 
-@defproc*[([(overline [t tblock/any]) tblock?]
-           [(underline [t tblock/any]) tblock?])]{
+@defthing[line-style/c contract?]{
+A contract for @racket[overline] and @racket[underline].
+Matches @racket[(or/c 'single 'double 'heavy char?)].}
+@defproc*[([(overline [t tblock/any] [#:style style line-style/c 'single]) tblock?]
+           [(underline [t tblock/any] [#:style style line-style/c 'single]) tblock?])]{
 Draws a line above or below the text.
 
-@display-example[the-eval (displayln (happend (overline "hello") " " (underline 'there) "!"))]
+@display-example[
+ the-eval
+ (displayln (happend (overline "hello") " " (underline 'there #:style 'double) "!"))]
 }
 
 
